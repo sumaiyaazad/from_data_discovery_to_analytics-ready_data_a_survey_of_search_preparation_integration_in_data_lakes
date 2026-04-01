@@ -1,0 +1,50 @@
+Paper Title,,Conference,ACM/IEEE Link,Phase,Authors
+Auto-BI: Automatically Build BI-Models Leveraging Local Join Prediction and Global Schema Graph,2023,VLDB,https://dl.acm.org/doi/10.14778/3603581.3603596,preparation,"Yiming Lin, Yeye He, Surajit Chaudhuri"
+Auto-Tables: Relationalize Tables without Using Examples,2024,SIGMOD,https://dl.acm.org/doi/10.1145/3665252.3665269,preparation,"Peng Li, Yeye He, Cong Yan, Yue Wang, Surajit Chaudhuri"
+Automatic Data Repair: Are We Ready to Deploy?,2024,VLDB,https://dl.acm.org/doi/10.14778/3675034.3675051,preparation,"Wei Ni, Xiaoye Miao, Xiangyu Zhao, Yangyang Wu, Shuwei Liang, Jianwei Yin"
+Benchmarking Filtering Techniques for Entity Resolution,2023,ICDE,https://ieeexplore.ieee.org/document/10184692,integration,George Papadakis; Marco Fisichella; Franziska Schoger; George Mandilaras; Nikolaus Augsten; Wolfgang Nejdl
+BLEND: A Unified Data Discovery System,2025,ICDE,https://ieeexplore.ieee.org/abstract/document/11112882,discovery,Mahdi Esmailoghli; Christoph Schnell; Renée J. Miller; Ziawasch Abedjan
+Can Foundation Models Wrangle Your Data?,2022,VLDB,https://dl.acm.org/doi/10.14778/3574245.3574258,preparation,"Avanika Narayan, Ines Chami, Laurel Orr, Christopher Ré"
+Causal Data Integration,2023,VLDB,https://dl.acm.org/doi/10.14778/3603581.3603602,integration,"Brit Youngmann, Michael Cafarella, Babak Salimi, Anna Zeng"
+CHORUS: Foundation Models for Unified Data Discovery and Exploration,2024,VLDB,https://dl.acm.org/doi/10.14778/3659437.3659461,discovery,"Moe Kayali, Anton Lykov, Ilias Fountalis, Nikolaos Vasiloglou, Dan Olteanu, Dan Suciu"
+CM-Explorer: Dissecting Data Ingestion Problems,2023,VLDB,https://dl.acm.org/doi/abs/10.14778/3611540.3611595,preparation,"Niels Bylois, Frank Neven, Stijn Vansummeren"
+Cross-Modal Data Discovery over Structured and Unstructured Data Lakes,2023,VLDB,https://dl.acm.org/doi/10.14778/3611479.3611533,discovery,"Mohamed Y. Eltabakh, Mayuresh Kunjir, Ahmed K. Elmagarmid, Mohammad Shahmeer Ahmad"
+CtxPipe: Context-aware Data Preparation Pipeline Construction for Machine Learning,2024,SIGMOD,https://dl.acm.org/doi/abs/10.1145/3698831,preparation,"Haotian Gao, Shaofeng Cai, Tien Tuan Anh Dinh, Zhiyong Huang, Beng Chin"
+"Data Discovery in Data Lakes: Operations, Indexes, Systems",2025,VLDB,https://dl.acm.org/doi/10.14778/3750601.3750694,discovery,"Ziawasch Abedjan, Mahdi Esmailoghli, Sainyam Galhotra"
+DataRinse: Semantic Transforms for Data Preparation Based on Code Mining,2023,VLDB,https://dl.acm.org/doi/10.14778/3611540.3611628,preparation,"Ibrahim Abdelaziz, Julian Dolby, Udayan Khurana, Horst Samulowitz, Kavitha Srinivas"
+DeepJoin: Joinable Table Discovery with Pre-trained Language Models,2023,VLDB,https://dl.acm.org/doi/10.14778/3603581.3603587,discovery,"Yuyang Dong, Chuan Xiao, Takuma Nozawa, Masafumi Enomoto, Masafumi Oyamada"
+Description-Similarity Rules: Towards Flexible Feature Engineering for Entity Matching,2025,ICDE,https://ieeexplore.ieee.org/document/11112979,integration,Yafeng Tang; Zheng Liang; Hongzhi Wang; Xiaoou Ding; Tianyu Mu; Huan Hu
+"DIALITE: Discover, Align, and Integrate Open Data Tables",2023,SIGMOD,https://dl.acm.org/doi/10.1145/3555041.3589732,integration,"Aamod Khatiwada, Roee Shraga, Renée J. Miller"
+Discovering Similarity Inclusion Dependencies,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3588929,integration,"Youri Kaminsky, Eduardo H. M. Pena, Felix Naumann"
+Effective Entity Augmentation by Querying External Data Sources,2023,VLDB,https://dl.acm.org/doi/abs/10.14778/3611479.3611535,integration,"Christopher Buss, Jasmin Mousavi, Mikhail Tokarev, Arash Termehchy, David Maier, Stefan Lee"
+Enriching Relations with Additional Attributes for Entity Resolution,2024,VLDB,https://dl.acm.org/doi/10.14778/3681954.3681987,integration,"Mengyi Yan, Wenfei Fan, Yaoshu Wang, Min Xie"
+Fast and Scalable Data Transfer Across Data Systems,2025,SIGMOD,https://dl.acm.org/doi/10.1145/3725294,preparation,"Haralampos Gavriilidis, Kaustubh Beedkar, Matthias Boehm, Volker Markl"
+Featpilot: Automatic Feature Augmentation on Tabular Data,2025,ICDE,https://ieeexplore.ieee.org/document/11113027,preparation,Jiaming Liang; Chuan Lei; Xiao Qin; Jiani Zhang; Asterios Katsifodimos; Christos Faloutsos
+FlexER: Flexible Entity Resolution for Multiple Intents,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3588722,integration,"Bar Genossar, Roee Shraga, Avigdor Gal"
+GitTables: A Large-Scale Corpus of Relational Tables,2023,SIGMOD,https://dl.acm.org/doi/abs/10.1145/3588710,discovery,"Madelon Hulsebos, Çagatay Demiralp, Paul Groth"
+Ground Truth Inference for Weakly Supervised Entity Matching,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3588712,integration,"Renzhi Wu, Alexander Bendeck, Xu Chu, Yeye He"
+HybridPipe: Combining Human-Generated and Machine-Generated Pipelines for Data Preparation,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3588945,preparation,"Sibei Chen, Nan Tang, Ju Fan, Xuemi Yan, Chengliang Chai, Guoliang Li, Xiaoyong Du"
+Integrating Data Lake Tables,2022,VLDB,https://dl.acm.org/doi/10.14778/3574245.3574274,integration,"Aamod Khatiwada, Roee Shraga, Wolfgang Gatterbauer, Renée J. Miller"
+LakeBench: A Benchmark for Discovering Joinable and Unionable Tables in Data Lakes,2024,VLDB,https://dl.acm.org/doi/abs/10.14778/3659437.3659448,discovery,"Yuhao Deng, Chengliang Chai, Lei Cao, Qin Yuan, Siyuan Chen, Yanrui Yu, Zhaoze Sun, Junyi Wang, Jiajun Li, Ziqi Cao,"
+"LakeCompass: An End-to-End System for Table Maintenance, Search and Analysis in Data Lakes",2024,VLDB,https://dl.acm.org/doi/10.14778/3685800.3685880,discovery,"Chengliang Chai, Yuhao Deng, Yutong Zhan, Ziqi Cao, Yuanfang Zhang, Lei Cao, Yuping Wang, Zhiwei Zhang, Ye Yuan, Guoren Wang, Nan Tang"
+Language Models Enable Simple Systems for Generating Structured Views of Heterogeneous Data Lakes,2023,VLDB,https://dl.acm.org/doi/abs/10.14778/3626292.3626294,preparation,"Simran Arora, Brandon Yang, Sabri Eyuboglu, Avanika Narayan, Andrew Hojel, Immanuel Trummer, Christopher Ré"
+LIFTus: An Adaptive Multi-Aspect Column Representation Learning for Table Union Search,2025,ICDE,https://ieeexplore.ieee.org/document/11113165,discovery,Ermu Qiu; Jun Gao; Yaofeng Tu; Jingru Yang
+Lingua Manga: A Large-Language-Model-Centric System for Data Curation,2023,VLDB,https://dl.acm.org/doi/10.14778/3611540.3611624,preparation,"Zui Chen, Lei Cao, Sam Madden"
+Magneto: Combining Small and Large Language Models for Schema Matching,2025,VLDB,https://dl.acm.org/doi/10.14778/3742728.3742757,integration,"Yurong Liu, Eduardo H. M. Pena, Aécio Santos, Eden Wu, Juliana Freire"
+Metam: Goal-Oriented Data Discovery,2023,ICDE,https://ieeexplore.ieee.org/document/10184845,discovery,Sainyam Galhotra; Yue Gong; Raul Castro Fernandez
+Progressive Entity Matching: A Design Space Exploration,2025,SIGMOD,https://dl.acm.org/doi/abs/10.1145/3709715,integration,"Jakub Maciejewski, Konstantinos Nikoletos, George Papadakis, Yannis Velegrakis"
+ReCG: Bottom-Up JSON Schema Discovery Using Cluster-and-Generalize,2024,VLDB,https://dl.acm.org/doi/10.14778/3681954.3682019,preparation,"Joohyung Yun, Byungchul Tak, Wook-Shin Han"
+Rottnest: Indexing Data Lakes for Search,2025,ICDE,https://ieeexplore.ieee.org/document/11113229,discovery,Ziheng Wang; Sasha Krassovsky; Conor Kennedy; Alex Aiken; Weston Pace; Rain Jiang
+SANTOS: Relationship-based Semantic Table Union Search,2023,SIGMOD,https://dl.acm.org/doi/abs/10.1145/3588689,discovery,"Aamod Khatiwada, Grace Fan, Roee Shraga, Zixuan Chen, Wolfgang Gatterbauer, Renée J. Miller, Mirek Riedewald"
+Schema Matching using Pre-Trained Language Models,2023,ICDE,https://ieeexplore.ieee.org/abstract/document/10184612,integration,Yunjia Zhan; Avrilia Floratou; Joyce Cahoon; Subru Krishnan; Andreas C. Müller; Dalitso Banda
+Searching Data Lakes for Nested and Joined Data,2024,VLDB,https://dl.acm.org/doi/10.14778/3681954.3682005,discovery,"Yi Zhang, Peter Baile Chen, Zachary G. Ives"
+Selecting Sub-tables for Data Exploration,2023,ICDE,https://ieeexplore.ieee.org/document/10184535,discovery,Yael Amsterdamer; Susan B. Davidson; Tova Milo; Kathy Razmadze; Amit Somech
+Semantics-aware Dataset Discovery from Data Lakes with Contextualized Column-based Representation Learning,2023,VLDB,https://dl.acm.org/doi/abs/10.14778/3587136.3587146,discovery,Aamod Khatiwada; Harsha Kokel; Ibrahim Abdelaziz; Subhajit Chaudhury; Julian Dolby; Oktie Hassanzadeh
+Sudowoodo: Contrastive Self-supervised Learning for Multi-purpose Data Integration and Preparation,2023,ICDE,https://ieeexplore.ieee.org/document/10184556,integration,Runhui Wang; Yuliang Li; Jin Wang
+Table Discovery in Data Lakes: State-of-the-art and Future Directions,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3555041.3589409,discovery,"Grace Fan, Jin Wang, Yuliang Li, Renée J. Miller"
+Table Overlap Estimation through Graph Embeddings,2025,SIGMOD,https://dl.acm.org/doi/10.1145/3725365,discovery,"Francesco Pugnaloni, Luca Zecchini, Matteo Paganelli, Matteo Lissandrini, Felix Naumann, Giovanni Simonini"
+TabSketchFM: Sketch-based Tabular Representation Learning for Data Discovery Over Data Lakes,2025,ICDE,https://ieeexplore.ieee.org/document/11113110,discovery,Aamod Khatiwada; Harsha Kokel; Ibrahim Abdelaziz; Subhajit Chaudhury; Julian Dolby; Oktie Hassanzadeh
+The Battleship Approach to the Low Resource Entity Matching Problem,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3626711,integration,"Bar Genossar, Avigdor Gal, Roee Shraga"
+Through the Fairness Lens: Experimental Analysis and Evaluation of Entity Matching,2023,VLDB,https://dl.acm.org/doi/10.14778/3611479.3611525,integration,"Nima Shahbazi, Nikola Danevski, Fatemeh Nargesian, Abolfazl Asudeh, Divesh Srivastava"
+Unicorn: A Unified Multi-tasking Model for Supporting Matching Tasks in Data Integration,2023,SIGMOD,https://dl.acm.org/doi/10.1145/3588938,integration,"Jianhong Tu, Ju Fan, Nan Tang, Peng Wang, Guoliang Li, Xiaoyong Du, Xiaofeng Jia, Song Gao"
+Ver: View Discovery in the Wild,2023,ICDE,https://ieeexplore.ieee.org/document/10184768,discovery,Yue Gong; Zhiru Zhu; Sainyam Galhotra; Raul Castro Fernandez

@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=0.8in]{geometry}
+
+% Typography
+\usepackage{microtype}
+\usepackage{newtxtext,newtxmath}
+
+% Spacing + structure
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{setspace}
+
+% Tables
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{ragged2e}
+
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setstretch{1.06}
+
+% Section spacing
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titleformat{\section}{\normalsize\bfseries}{\thesection.}{0.6em}{}
+
+% Lists
+\setlist[itemize]{leftmargin=1.3em, topsep=2pt, itemsep=1pt, parsep=0pt}
+
+% Timeline columns
+\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\renewcommand{\arraystretch}{1.2}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries From Data Discovery to Analytics-Ready Data:\\
+A Survey of Search, Preparation, and Integration in Data Lakes}\\[7pt]
+{\normalsize Sumaiya Azad \quad $\cdot$ \quad u1494915 \quad $\cdot$ \quad University of Utah}
+\end{center}
+
+\vspace{2pt}
+
+\section{Description}
+Data lake pipelines are commonly described as three phases:
+\emph{discovery and search} (finding relevant tables),
+\emph{preparation and wrangling} (cleaning and structuring data for analysis),
+and \emph{integration and matching} (aligning schemas and reconciling records).
+This survey will review recent work across all three phases and will organize the literature by the
+\emph{artifacts each phase produces} and the \emph{assumptions those artifacts encode}.
+
+Across the literature, evaluation is often reported using \emph{phase-local} metrics that are not directly comparable across phases.
+A key goal of this survey will be to summarize how papers define phase outputs, what datasets and benchmarks they use,
+and which evaluation setups reflect utility for analytics-ready data.
+
+\section{Method}
+I will conduct a structured literature review consisting of:
+\begin{itemize}
+  \item a reproducible paper collection protocol (venues/years, search strings, inclusion/exclusion criteria);
+  \item a taxonomy that maps papers to phase outputs and problem settings; and
+  \item a synthesis comparing problem assumptions, produced artifacts, and evaluation practices across phases.
+\end{itemize}
+
+Anchor references will include 
+LakeBench~\cite{10.14778/3659437.3659448} (benchmarks for discovery),
+ALITE~\cite{10.14778/3574245.3574274} (table integration semantics),
+and HAIPipe~\cite{10.1145/3588945} (human--machine preparation pipelines).
+
+\section{Plans and Timeline}
+\begin{tabularx}{\linewidth}{@{}L{2.6cm} @{\hspace{10pt}} Y@{}}
+\textbf{Weeks 1--2} &
+I will finalize the scope (years, venues, and tasks). I will write the review protocol: search strings and inclusion/exclusion criteria.
+I will build an initial reading list from benchmark and system anchor works. \\[5pt]
+
+\textbf{Weeks 3--4} &
+I will screen and expand the corpus (including backward/forward citation chasing). I will assign papers to a first-pass taxonomy
+for discovery and search, preparation and wrangling, and integration and matching. \\[5pt]
+
+\textbf{Weeks 5--6} &
+I will extract and normalize evaluation details (datasets, labels, metrics, and reported costs) using a consistent coding template. \\[5pt]
+
+\textbf{Weeks 7--8} &
+I will draft the survey synthesis by phase, emphasizing phase outputs and how papers define inputs/outputs, assumptions, and evaluation. \\[5pt]
+
+\textbf{Weeks 9--10} &
+I will finalize the write-up: taxonomy figure(s), comparison table(s) for datasets, and a concise set of open problems. \\
+\end{tabularx}
+
+\vspace{4pt}
+{\small\bibliographystyle{abbrv}
+\bibliography{ref}}
+
+\end{document}
