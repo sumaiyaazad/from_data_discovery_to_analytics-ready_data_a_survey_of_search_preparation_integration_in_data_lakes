@@ -1,0 +1,260 @@
+\documentclass[sigconf]{acmart}
+
+\usepackage{xspace}
+\usepackage{graphics}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{textcomp}
+\usepackage{microtype}
+\usepackage{ccicons}
+\usepackage{todonotes}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{caption}
+\usepackage{soul}
+\usepackage[normalem]{ulem}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\usepackage{balance}
+
+\newtheorem{example}{Example}
+
+\hypersetup{
+  colorlinks,
+  urlcolor=blue}
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+\setcopyright{acmcopyright}
+\copyrightyear{2024}
+\acmYear{2024}
+\acmDOI{XXXXXXX.XXXXXXX}
+\acmConference[SIGMOD '24]{International Conference on Management of Data}{June 09--15, 2024}{Santiago, Chile}
+\acmPrice{15.00}
+\acmISBN{978-1-4503-XXXX-X/18/06}
+
+\setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\settopmatter{printacmref=false}
+\acmDOI{}
+\acmConference[]{}{}{}
+\acmBooktitle{}
+\acmISBN{}
+\date{}
+
+\begin{document}
+\pagestyle{plain}
+\title{From Data Discovery to Analytics-Ready Data:\\A Survey of Search, Preparation, and Integration in Data Lakes}
+\subtitle{Project Milestone}
+
+\author{Sumaiya Azad}
+\affiliation{%
+  \institution{University of Utah}
+  \city{Salt Lake City}
+  \state{Utah}
+  \country{USA}}
+\email{sumaiya.azad@utah.edu}
+
+\renewcommand{\shortauthors}{Azad et al.}
+
+\maketitle
+
+\bigskip
+
+\section{Problem Statement}
+
+This project studies how data-lake workflows move from raw, heterogeneous assets to analytics-ready datasets through three connected phases:
+\emph{Discovery and Search}, \emph{Preparation and Wrangling}, and \emph{Integration and Matching}.
+The literature review is based on a screened corpus from 2022--2025 across SIGMOD, PVLDB, and ICDE.
+
+The core problem is that many papers report strong \emph{phase-local} performance, while downstream readiness depends on cross-phase compatibility and handoff quality.
+For example, discovery quality affects what preparation can repair, and preparation choices affect later schema matching and entity resolution.
+Recent systems illustrate this coupling:
+LakeCompass and BLEND for end-to-end discovery workflows~\cite{10.14778/3685800.3685880,11112882},
+HAIPipe and CtxPipe for preparation pipeline quality~\cite{10.1145/3588945,10.1145/3698831},
+and ALITE and DIALITE for integration semantics over discovered tables~\cite{10.14778/3574245.3574274,10.1145/3555041.3589732}.
+
+The expected outcome of this review is a clear and actionable map of where existing methods are sufficient and where they fail for end-to-end analytics readiness.
+This helps define evaluation settings that reflect real data-lake workflows rather than isolated tasks.
+
+\section{Response to Feedback}
+\begin{enumerate}[leftmargin=*,itemsep=4pt,topsep=1pt,partopsep=0pt,parsep=0pt]
+  \item 
+  I will use the complete 2022--2025 screened corpus and present the findings with a workflow-level synthesis.
+
+  \item 
+  I will prioritize technical papers. Most evidence will come from system and method papers across SIGMOD, PVLDB, and ICDE, while surveys will be used as context.
+
+  \item 
+  I have included the \emph{full taxonomy coverage of 49 methods} below.
+
+  \item
+  I have added a section on unresolved areas.
+
+  \item
+  I have added short example cases to show where current methods are still insufficient.
+\end{enumerate}
+
+\section{Technical Paper Coverage}
+The screened corpus includes 49 methods (15 SIGMOD, 22 PVLDB, 12 ICDE), organized into a full taxonomy---each method corresponds to one included paper.
+\begin{itemize}[leftmargin=*,itemsep=2pt]
+  \item \textbf{Discovery and Search:} 19 methods
+  \item \textbf{Preparation and Wrangling:} 13 methods
+  \item \textbf{Integration and Matching:} 17 methods
+\end{itemize}
+Table~\ref{tab:planned-technical-coverage-numbered} summarizes the taxonomy, including each sub-taxonomy and its methods.
+
+\begin{table*}[t]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.10}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}X@{}}
+\toprule
+\textbf{Discovery and Search (19)} & \textbf{Preparation and Wrangling (13)} & \textbf{Integration and Matching (17)} \\
+\midrule
+\begin{minipage}[t]{\linewidth}\vspace{0pt}
+\textbf{End-to-end discovery and exploration systems}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item CHORUS~\cite{10.14778/3659437.3659461}
+\item BLEND~\cite{11112882}
+\item LakeCompass~\cite{10.14778/3685800.3685880}
+\item METAM~\cite{10184845}
+\item Selecting Sub-tables~\cite{10184535}
+\item Ver~\cite{10184768}
+\end{enumerate}
+\textbf{Semantic and learned representations}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item CMDL~\cite{10.14778/3611479.3611533}
+\item Starmie~\cite{10.14778/3587136.3587146}
+\item LIFTus~\cite{11113165}
+\item TabSketchFM~\cite{11113110}
+\end{enumerate}
+\textbf{Join and union search, and overlap estimation}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item DeepJoin~\cite{10.14778/3603581.3603587}
+\item SANTOS~\cite{10.1145/3588689}
+\item Nested/Joined Lake Search~\cite{10.14778/3681954.3682005}
+\item Armadillo~\cite{10.1145/3725365}
+\end{enumerate}
+\textbf{Indexing, benchmarks, corpora, and surveys for discovery}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item Rottnest~\cite{11113229}
+\item GitTables~\cite{10.1145/3588710}
+\item LakeBench~\cite{10.14778/3659437.3659448}
+\item Data Discovery Survey~\cite{10.14778/3750601.3750694}
+\item Table Discovery Survey~\cite{10.1145/3555041.3589409}
+\end{enumerate}
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}\vspace{0pt}
+\textbf{Cleaning, repair, and LM-centric curation}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item Automatic Data Repair~\cite{10.14778/3675034.3675051}
+\item DataRinse~\cite{10.14778/3611540.3611628}
+\item Foundation Models for Data Tasks~\cite{10.14778/3574245.3574258}
+\item Lingua Manga~\cite{10.14778/3611540.3611624}
+\end{enumerate}
+\textbf{Pipeline synthesis and augmentation for ML analytics}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item CtxPipe~\cite{10.1145/3698831}
+\item HAIPipe~\cite{10.1145/3588945}
+\item Featpilot~\cite{11113027}
+\item Auto-BI~\cite{10.14778/3603581.3603596}
+\end{enumerate}
+\textbf{Structuring, relationalization, ingestion debugging, and data movement}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item Evaporate~\cite{10.14778/3626292.3626294}
+\item Auto-Tables~\cite{10.1145/3665252.3665269}
+\item ReCG~\cite{10.14778/3681954.3682019}
+\item CM Explorer~\cite{10.14778/3611540.3611595}
+\item XDBC~\cite{10.1145/3725294}
+\end{enumerate}
+\end{minipage}
+&
+\begin{minipage}[t]{\linewidth}\vspace{0pt}
+\textbf{Schema/table matching and integration}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item DIALITE~\cite{10.1145/3555041.3589732}
+\item ALITE~\cite{10.14778/3574245.3574274}
+\item Magneto~\cite{10.14778/3742728.3742757}
+\item PLM Schema Matching~\cite{10184612}
+\end{enumerate}
+\textbf{Entity matching and ER workflows}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item FlexER~\cite{10.1145/3588722}
+\item Progressive EM~\cite{10.1145/3709715}
+\item Unicorn~\cite{10.1145/3588938}
+\item WeakSup GT Inference~\cite{10.1145/3588712}
+\item Battleship~\cite{10.1145/3626711}
+\end{enumerate}
+\textbf{Evaluation, fairness, and feature engineering for matching}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item Fairness Lens~\cite{10.14778/3611479.3611525}
+\item Filtering Benchmarks~\cite{10184692}
+\item DescSim Rules~\cite{11112979}
+\item Relation Enrichment~\cite{10.14778/3681954.3681987}
+\end{enumerate}
+\textbf{Integration signals and augmentation}
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=1pt]
+\item Causal DI~\cite{10.14778/3603581.3603602}
+\item Entity Augmentation~\cite{10.14778/3611479.3611535}
+\item Sudowoodo~\cite{10184556}
+\item SIND~\cite{10.1145/3588929}
+\end{enumerate}
+\end{minipage}
+\\
+\bottomrule
+\end{tabularx}
+\caption{Paper coverage by taxonomy and sub-taxonomy.}
+\label{tab:planned-technical-coverage-numbered}
+\end{table*}
+
+\section{Unresolved Areas and Example Cases}
+To ground these open problems, consider one case: a city analyst preparing a flood-risk report from several data-lake tables. Discovery may return incomplete or weakly documented candidates. Preparation must standardize timestamps, location fields, and missing values. Integration is still difficult because many tables overlap only partly, and simple pairwise joins can drop useful facts or create too many null values. Different teams may also need different outputs from the same source data. This scenario shows why evaluation should go beyond single-stage scores and include update handling, partial-overlap integration quality, and practical constraints such as fairness and privacy. A weak choice in discovery can create extra cleanup work in preparation and lower output quality in integration. This section lists the main open problems that appear in this kind of workflow.
+\begin{enumerate}[leftmargin=*,itemsep=1pt,topsep=0pt,partopsep=0pt,parsep=0pt]
+  \item \textbf{Cross-phase evaluation gap.} Many papers evaluate each phase on its own. This can hide problems when one phase passes results to the next phase. For example, discovery may return tables that seem useful, but the tables may miss important columns, use different formats, or contain noisy values. Then preparation and integration need extra fixing work, and final result quality drops even when early scores look good.\\
+  \textbf{Evidence papers:} DIALITE, ALITE, CHORUS, BLEND, Sudowoodo, and SIND~\cite{10.1145/3555041.3589732,10.14778/3574245.3574274,10.14778/3659437.3659461,11112882,10184556,10.1145/3588929}.
+
+  \item \textbf{Update-aware maintenance gap.} Most systems are tested on fixed datasets, but real data lakes keep changing. New tables arrive, old tables are edited, and column structures change. Because of this, search indexes, learned table representations, and matching signals can become outdated. If they are not refreshed carefully, search and matching quality drops. If everything is rebuilt too often, time and compute cost increase.\\
+  \textbf{Evidence papers:} LakeCompass, LakeBench, and the Data Discovery Survey~\cite{10.14778/3685800.3685880,10.14778/3659437.3659448,10.14778/3750601.3750694}.
+
+  \item \textbf{Integration under partial overlap.} Simple pairwise joins are often not enough when tables overlap only partly and contain many missing values. One table may have some fields for an entity, while another table has different fields for the same entity. If we only do local pairwise joins, we can lose useful facts or create too many missing values in the final output. For example, two city tables may refer to the same locations, but each one covers different columns and rows. In this case, we need richer integration logic than local matching alone.\\
+  \textbf{Evidence papers:} ALITE and DIALITE~\cite{10.14778/3574245.3574274,10.1145/3555041.3589732}.
+
+  \item \textbf{Intent, fairness, and privacy rules.} One definition of a ``good match'' is often not enough. Different users have different goals, so a choice that helps one task may hurt another. A model can also make more errors for some groups even when overall accuracy looks high, which is a fairness issue. Matching may use sensitive fields, and linking tables can expose personal information, which creates privacy risk. In practice, evaluation should report results by user intent and by subgroup, and should also check whether sensitive data is unnecessarily exposed.\\
+  \textbf{Evidence papers:} FlexER, Fairness Lens, Foundation Models for Data Tasks, and Magneto~\cite{10.1145/3588722,10.14778/3611479.3611525,10.14778/3574245.3574258,10.14778/3742728.3742757}.
+\end{enumerate}
+
+\section{Progress Made So Far}
+\begin{itemize}[leftmargin=*,itemsep=3pt]
+  \item I have completed screening and grouping of the 2022--2025 corpus across SIGMOD, PVLDB, and ICDE.
+  \item I have organized the literature into the three-phase taxonomy used in this report: Discovery and Search, Preparation and Wrangling, and Integration and Matching.
+  \item I have mapped 49 methods into taxonomy and sub-taxonomy groups and prepared the coverage table in this milestone.
+  \item I have drafted the unresolved areas and linked each area to evidence papers.
+\end{itemize}
+
+\section{Next Steps}
+\begin{enumerate}[leftmargin=*,itemsep=3pt,topsep=1pt,partopsep=0pt,parsep=0pt]
+  \item I will finish the methodology section and clearly state how papers were selected and grouped.
+  \item I will complete each phase section using the same structure: task, method, output, and evaluation.
+  \item I will add a short cross-phase summary showing how outputs from one phase affect the next phase.
+  \item I will convert the unresolved areas into practical evaluation checks for updates, partial overlap, intent, fairness, and privacy.
+  \item I will do a final edit pass for citations, wording, and formatting.
+\end{enumerate}
+
+\newpage
+\balance
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{ref}
+
+\end{document}
+\endinput

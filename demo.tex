@@ -97,15 +97,17 @@
 % Title + Authors
 % ======================
 \title[Survey of Data Discovery to Integration in Data Lakes]%
-{From Data Discovery to Analytics-Ready Data: A Survey of Search, Preparation, and Integration in Data Lakes}
+{From Data Discovery to Analytics-Ready Data:\\A Survey of Search, Preparation, and Integration in Data Lakes}
 
 \author{Sumaiya Azad}
 \affiliation{%
   \institution{University of Utah}
-  \country{USA}
-}
+  \city{Salt Lake City}
+  \state{Utah}
+  \country{USA}}
+\email{sumaiya.azad@utah.edu}
 
-\renewcommand{\shortauthors}{Author et al.}
+\renewcommand{\shortauthors}{Azad et al.}
 
 
 % ======================
@@ -239,7 +241,7 @@ S4 & \texttt{schema matching}, \texttt{entity resolution}, \texttt{record linkag
 
 \paragraph{Step 3: Sources and retrieval.}
 We scan proceedings of three top database venues---SIGMOD, PVLDB (the journal of the VLDB Endowment), and ICDE---by running title and abstract queries with the keyword groups S1--S4.
-The final collection includes 49 methods: 15 from SIGMOD, 22 from VLDB/PVLDB, and 12 from ICDE.
+The final collection includes 49 methods: 15 from SIGMOD, 22 from PVLDB, and 12 from ICDE.
 
 \paragraph{Step 4: Inclusion and exclusion.}
 We include methods that study a data lake or lakehouse setting and that propose a concrete technique for discovery, preparation, or integration. We exclude methods that do not target a lake setting.
@@ -1000,7 +1002,7 @@ Causal DI~\cite{10.14778/3603581.3603602} addresses a specific analytics need: e
 \section{Distribution of Methods by Phase}
 \label{sec:pubs-by-phase}
 
-Table~\ref{tab:taxonomy-summary} shows a balanced spread: Discovery \& Search has 19 methods (38.8\%), Preparation \& Wrangling has 13 (26.5\%), and Integration \& Matching has 17 (34.7\%). The methods come from three venues: 22 from VLDB/PVLDB, 15 from SIGMOD, and 12 from ICDE. A key observation is that recent data-lake work is not limited to one task at a time. Discovery methods increasingly build complete system stacks. Preparation methods often produce reusable automated workflows. Integration methods pay more attention to workflow design and evaluation beyond a single accuracy score. A strong cross-phase pattern is the reuse of shared signals---learned embeddings, profiling cues, and matching evidence---across stages.
+Table~\ref{tab:taxonomy-summary} shows a balanced spread: Discovery \& Search has 19 methods (38.8\%), Preparation \& Wrangling has 13 (26.5\%), and Integration \& Matching has 17 (34.7\%). The methods come from three venues: 22 from PVLDB, 15 from SIGMOD, and 12 from ICDE. A key observation is that recent data-lake work is not limited to one task at a time. Discovery methods increasingly build complete system stacks. Preparation methods often produce reusable automated workflows. Integration methods pay more attention to workflow design and evaluation beyond a single accuracy score. A strong cross-phase pattern is the reuse of shared signals---learned embeddings, profiling cues, and matching evidence---across stages.
 
 \paragraph{Discovery and Search.}
 The discovery subset is slightly larger than the other two, which makes sense given how hard it is to navigate a large lake before any cleaning or alignment can begin. Within this phase, recent work spans both operational systems and shared resources such as corpora (large shared table collections like GitTables~\cite{10.1145/3588710}), benchmarks, and embedding methods. This mix matters because retrieval quality depends not only on better ranking models, but also on having shared data for training and fair comparison.
@@ -1136,7 +1138,7 @@ Reading methods across phases makes this mismatch especially clear. BLEND~\cite{
 For this reason, we organize our comparisons by output type and phase role, rather than collapsing all methods into a single score. It is reasonable to say that recent work improves retrieval quality, lowers supervision cost, or improves merge rules in a specific setting. It is less safe to claim that one line of work is simply ``better'' without naming the goal, the output type, and the evaluation conditions.
 
 \subsection{Threats to Validity}
-Like any survey, this study has limits. First, \emph{source coverage}: we searched three venues (SIGMOD, PVLDB, ICDE), so methods published elsewhere may be missing, which could bias our phase counts and trend claims. Second, \emph{coding bias}: some methods could reasonably fit more than one category; we mitigate this by assigning each method exactly once based on its primary output. Third, the \emph{2022--2025 time window} narrows our view; important earlier work is cited but not covered in the same depth. Fourth, \emph{objective mismatch}: different methods optimize different goals (consistency, retrieval quality, downstream accuracy), so side-by-side comparison is inherently imperfect. Finally, limited code and data release by authors makes full reproducibility difficult. To avoid over-claiming, we keep phase-specific metrics separate and note where reproducibility is weak.
+Like any survey, this study has limits. First, \emph{source coverage}: we searched three venues (SIGMOD, PVLDB, and ICDE), so methods published elsewhere may be missing, which could bias our phase counts and trend claims. Second, \emph{coding bias}: some methods could reasonably fit more than one category; we mitigate this by assigning each method exactly once based on its primary output. Third, the \emph{2022--2025 time window} narrows our view; important earlier work is cited but not covered in the same depth. Fourth, \emph{objective mismatch}: different methods optimize different goals (consistency, retrieval quality, downstream accuracy), so side-by-side comparison is inherently imperfect. Finally, limited code and data release by authors makes full reproducibility difficult. To avoid over-claiming, we keep phase-specific metrics separate and note where reproducibility is weak.
 
 \subsection{Research Agenda}
 The literature suggests five concrete next steps:

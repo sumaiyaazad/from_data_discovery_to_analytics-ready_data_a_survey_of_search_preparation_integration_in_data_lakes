@@ -207,7 +207,7 @@ S4 & \texttt{schema matching}, \texttt{entity resolution}, \texttt{record linkag
 
 \paragraph{Step 3: Sources and retrieval.}
 We scan proceedings of three top database venues---SIGMOD, PVLDB (the journal of the VLDB Endowment), and ICDE---by running title and abstract queries with the keyword groups S1--S4.
-The final collection includes 49 methods: 15 from SIGMOD, 22 from VLDB/PVLDB, and 12 from ICDE.
+The final collection includes 49 methods: 15 from SIGMOD, 22 from PVLDB, and 12 from ICDE.
 
 \paragraph{Step 4: Inclusion and exclusion.}
 We include methods that study a data lake or lakehouse setting and that propose a concrete technique for discovery, preparation, or integration. We exclude methods that do not target a lake setting.
@@ -981,7 +981,7 @@ Causal DI~\cite{10.14778/3603581.3603602} frames augmentation around causal requ
 \section{Publications by Phase}
 \label{sec:pubs-by-phase}
 
-Table~\ref{tab:taxonomy-summary} shows a balanced distribution across phases: Discovery \& Search has 19 methods (38.8\%), Preparation \& Wrangling has 13 (26.5\%), and Integration \& Matching has 17 (34.7\%). Venue coverage is broad: 22 methods from VLDB/PVLDB, 15 from SIGMOD, and 12 from ICDE. Overall, recent data-lake work is not limited to isolated tasks. Discovery methods increasingly report full system stacks and shared benchmarks. Preparation methods often produce rerunnable workflows or structured outputs. Integration methods increasingly emphasize workflow design, intent, and evaluation beyond one global score. A strong cross-phase pattern is reuse of shared signals such as learned representations, profiling cues, and intermediate matching evidence.
+Table~\ref{tab:taxonomy-summary} shows a balanced distribution across phases: Discovery \& Search has 19 methods (38.8\%), Preparation \& Wrangling has 13 (26.5\%), and Integration \& Matching has 17 (34.7\%). Venue coverage is broad: 22 methods from PVLDB, 15 from SIGMOD, and 12 from ICDE. Overall, recent data-lake work is not limited to isolated tasks. Discovery methods increasingly report full system stacks and shared benchmarks. Preparation methods often produce rerunnable workflows or structured outputs. Integration methods increasingly emphasize workflow design, intent, and evaluation beyond one global score. A strong cross-phase pattern is reuse of shared signals such as learned representations, profiling cues, and intermediate matching evidence.
 
 \paragraph{Discovery and Search.}
 The discovery subset is slightly larger than the other two phases, which is consistent with the practical difficulty of navigating large lakes before any cleaning or alignment can begin. Within this phase, recent work spans both operational systems and shared resources such as corpora (shared table collections), benchmarks, and embedding methods. That mix matters because retrieval quality in large lakes depends not only on better ranking models, but also on the availability of shared resources for training and comparison.
