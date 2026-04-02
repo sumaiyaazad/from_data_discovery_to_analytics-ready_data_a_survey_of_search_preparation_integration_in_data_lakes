@@ -165,10 +165,6 @@ We review 49 methods published from 2022 to 2025 and group them by what they pro
 
 \maketitle
 
-\noindent \textbf{Video link: \emph{put link to the video here.}}
-
-\noindent \textbf{Source Code link: \emph{put link to the source code here.}}
-
 % ==========================================================
 \section{Introduction}
 Data lakes store many kinds of data together---spreadsheet-like tables, semi-structured files (such as JSON or XML), server logs, and fields pulled from documents---without requiring one fixed column layout (called a \emph{schema}) at load time.
@@ -176,11 +172,9 @@ Loading data is easy, but using it later is hard.
 Before analysts can run queries, build dashboards, or train models, they must (1)~find the right data, (2)~clean and organize it, and (3)~combine it from multiple sources.
 
 \paragraph{Scope and terminology.}
-In this survey, \emph{discovery} means finding relevant tables or columns inside a data lake. This includes keyword search and finding tables that can be \emph{joined} (linked by a shared key column, for example matching on \texttt{customer\_id}) or \emph{unioned} (stacked on top of each other because they have similar columns) \cite{10.1145/3555041.3589409,10.14778/3750601.3750694}. \emph{Preparation and wrangling} means cleaning errors, transforming values (for example, converting dates to a standard format), and organizing raw data into usable tables or automated workflows that can run again when new data arrives. \emph{Integration and matching} means lining up columns across different sources (for example, recognizing that \texttt{zip\_code} in one table is the same as \texttt{postal\_code} in another) and producing a single combined output. A special case is \emph{entity resolution (ER)}: deciding whether two records describe the same real-world thing---for instance, whether ``J.\ Smith, NYC'' and ``John Smith, New York'' refer to the same person. We use \emph{analytics-ready data} to mean data that is clean and structured enough to use directly for reports, statistics, or machine learning.
+\emph{Discovery} means finding relevant tables or columns, including \emph{join} search (tables sharing a key column) and \emph{union} search (tables with compatible columns)~\cite{10.1145/3555041.3589409,10.14778/3750601.3750694}. \emph{Preparation} means cleaning errors, transforming values, and organizing raw data into usable tables or reusable workflows. \emph{Integration} means lining up columns across sources and producing a merged output; \emph{entity resolution (ER)} is the special case of deciding whether two records describe the same real-world thing. We use \emph{analytics-ready data} to mean data clean and structured enough for reports, statistics, or machine learning.
 
-Two trends now make this pipeline harder.
-First, modern data lakes are large and weakly documented---tables often lack descriptions, column names are inconsistent, and it is unclear which sources overlap or can be combined \cite{10.1145/3555041.3589409,10.14778/3750601.3750694}.
-Second, methods that use \emph{embeddings} (compact numerical vectors that capture the meaning of a column or table) and large language models now appear in all three stages \cite{10.14778/3659437.3659461,10.14778/3611540.3611624,10.14778/3742728.3742757}. These methods can infer what columns mean, suggest cleaning steps, and help match records. But they also raise concerns about cost, reliability, and data privacy.
+Two trends make this pipeline harder: (1)~modern data lakes are large and weakly documented~\cite{10.1145/3555041.3589409,10.14778/3750601.3750694}; (2)~embedding-based and language-model-based methods now appear in all three stages~\cite{10.14778/3659437.3659461,10.14778/3611540.3611624,10.14778/3742728.3742757}, raising concerns about cost, reliability, and privacy.
 
 This survey follows the full path from raw lake data to analytics-ready outputs in three phases:
 (1) \emph{Discovery \& Search} finds relevant tables and ranks candidates that could be joined or unioned;
@@ -469,7 +463,7 @@ Entity-resolution (ER) workflows combine three steps: \emph{blocking} (quickly e
 Evaluation work studies how to trade off speed versus quality in filtering, whether error rates differ across demographic subgroups (fairness), and how to build useful matching features at low cost \cite{10184692,10.14778/3611479.3611525,11112979,10.14778/3681954.3681987}.
 Other methods produce reusable signals---such as approximate foreign-key relationships, shared embeddings, and selectively retrieved external data---that can help multiple integration tasks at once \cite{10.1145/3588929,10184556,10.14778/3611479.3611535,10.14778/3603581.3603602}.
 
-These three classes form a single pipeline. Discovery narrows a large, weakly documented lake down to a manageable set of candidate tables. Preparation converts those candidates into stable, reusable outputs. Integration lines up the remaining overlaps and produces the final merged result. This pipeline view is useful because many recent methods produce intermediate outputs---such as embeddings or candidate lists---that flow directly from one phase to the next.
+These three classes form a single pipeline: discovery narrows a lake to candidates, preparation converts them into stable outputs, and integration produces the final merged result.
 
 
 
@@ -595,12 +589,10 @@ Consolidated overview of table discovery methods and open directions at lake sca
 \end{tabularx}
 \end{table*}
 
-Overall, discovery methods show four patterns. First, systems are moving from single search features to end-to-end discovery stacks that handle indexing, search, and user interaction together. Second, retrieval quality increasingly depends on learned meaning-based representations (embeddings) rather than metadata alone. Third, join search, union search, and overlap estimation (measuring how much two tables share) serve as building blocks that later integration steps also use. Fourth, shared corpora and benchmarks are essential because they let different methods be trained and compared on the same data.
-
-Another recurring pattern is that discovery methods treat user interaction as part of the core system, not just an interface on top. In large lakes, analysts often start with vague needs---for example, ``I need something about product sales.'' Systems therefore support iterative refinement through previews, alternative candidates, and step-by-step narrowing.
+Four patterns emerge. First, systems are moving from single search features to end-to-end stacks that handle indexing, search, and user interaction together. Second, retrieval quality increasingly depends on learned embeddings rather than metadata alone. Third, join search, union search, and overlap estimation serve as building blocks for later integration. Fourth, shared corpora and benchmarks are essential for fair comparison.
 
 \subsubsection{End-to-end Discovery and Exploration Systems}
-End-to-end discovery systems return \emph{ranked tables, derived views, or dataset augmentations} (for example, adding useful columns from related tables) that help analysts move from a vague idea to a concrete, usable dataset. A common architecture has three parts: (i)~\emph{offline enrichment}---profiling each table, adding meaning labels, building vector representations, and keeping search indexes up to date; (ii)~\emph{online retrieval}---keyword search, join search, union search, and view search that run when a user submits a query; and (iii)~\emph{interactive exploration}---letting the user browse previews and refine results step by step.
+End-to-end discovery systems return ranked tables, derived views, or dataset augmentations. A common architecture has three parts: (i)~offline enrichment (profiling, indexing); (ii)~online retrieval (keyword, join, union, and view search); and (iii)~interactive exploration.
 
 \paragraph{Foundation models as a shared backbone for discovery.}
 CHORUS~\cite{10.14778/3659437.3659461} uses a large language model (a ``foundation model'') to produce shared understanding of each table---for example, detecting what category a table belongs to, what type each column is, and which columns could be used to join tables together. These annotations are then reused for indexing, filtering, and ranking.
@@ -623,7 +615,7 @@ Even when search returns relevant candidates, a table with millions of rows is h
 Ver~\cite{10184768} studies \emph{view discovery}: when many ways of joining tables are possible, it searches candidate join structures, removes redundant options, and asks the user targeted questions to narrow down to the intended merged view.
 
 \subsubsection{Semantic and Learned Representations for Discovery}
-Discovery in data lakes is hard because \emph{meaning is rarely written down explicitly}: table titles may be missing or vague, column names are inconsistent across sources, and the same real-world concept (for example, ``city'') can appear in many formats. To overcome this, many methods learn compact numerical representations---vectors called \emph{embeddings}---for columns and tables, so that search can compare meaning rather than relying on exact text matches.
+Because meaning is rarely written down explicitly in data lakes, many methods learn compact embeddings for columns and tables so that search can compare meaning rather than exact text.
 
 \paragraph{Cross-modal embeddings for discovery beyond tables.}
 CMDL~\cite{10.14778/3611479.3611533} handles lakes that contain both structured tables and unstructured text documents. It embeds columns and documents into a shared vector space so that, for example, a text report mentioning ``revenue'' can be retrieved alongside a table with a ``revenue'' column. Because labeled cross-modal examples are scarce, CMDL uses weak supervision---automatically generated, approximate labels---to create enough training data.
@@ -653,7 +645,7 @@ Nested/Joined Lake Search~\cite{10.14778/3681954.3682005} goes beyond searching 
 Armadillo~\cite{10.1145/3725365} provides a unifying relatedness measure that works regardless of whether the downstream action is join, union, or deduplication. It formalizes \emph{overlap}---how much data two tables share---and learns graph-based embeddings whose vector similarity approximates overlap at scale.
 
 \subsubsection{Benchmarks, Corpora, and Surveys for Discovery}
-Discovery at lake scale depends on shared resources as much as on new ranking models. A \emph{corpus} is a large, publicly available collection of tables that researchers use to train models and run experiments. A \emph{benchmark} is a standardized test suite with known correct answers, so different methods can be compared fairly. Indexing techniques make it possible to search large lakes quickly, and surveys summarize what the research community has learned so far.
+Discovery at lake scale depends on shared resources---corpora for training, benchmarks for fair comparison, and indexing techniques for efficient search.
 
 \paragraph{Indexing for heterogeneous search workloads.}
 Rottnest~\cite{11113229} proposes a lakehouse indexing protocol that manages the overhead of building and updating indexes, making search-oriented discovery practical on evolving lake storage.
@@ -761,16 +753,14 @@ Decomposes data transfer into configurable stages and auto-tunes configurations 
 \end{tabularx}
 \end{table*}
 
-Across these methods, the key insight is that preparation is not about applying a single cleaning step---it is about building reusable outputs that hold up as data changes over time. Some methods focus on reducing errors in existing tables. Others build automated workflows that improve the performance of downstream machine-learning models. Others convert messy, non-standard inputs (such as nested JSON files or inconsistent spreadsheets) into well-structured relational tables that can be validated and reused. The common theme is \emph{repeatable automated workflows} instead of one-time manual fixes.
-
-This phase sits in the middle of the pipeline. Discovery often retrieves promising but messy data, while integration assumes that the data is already reasonably well-structured. So preparation methods do more than improve local data quality: they directly affect how well later matching and integration will work. For example, if preparation fails to standardize date formats across tables, the integration phase may incorrectly treat matching dates as different values. This downstream impact is easy to miss when evaluation only reports local repair or transformation metrics.
+The common theme is \emph{repeatable automated workflows} instead of one-time manual fixes. Because discovery often retrieves messy data and integration assumes reasonably well-structured inputs, preparation directly affects how well later matching works. If preparation fails to standardize date formats, for example, integration may incorrectly treat matching dates as different values---an impact easy to miss when evaluation only reports local metrics.
 
 
 
 \subsubsection{Cleaning, Repair, and LM-based Curation}
 Data lakes make classic data-quality problems worse: errors are frequent and come in many forms (typos, missing values, inconsistent formats), and the context needed to understand dirty values is often unavailable. Methods in this category focus on two goals: (i)~\emph{deployable repair} that actually reduces the number of errors in a table (not just edits cells in ways that may introduce new mistakes), and (ii)~\emph{reusable curation workflows} that package cleaning know-how into automated, controllable steps.
 
-An important subtlety is that different preparation methods optimize different goals, even when they seem similar. Some aim for consistency (making all values follow the same format). Some aim for net error reduction (fixing more errors than they introduce). Others are judged by how well the cleaned data improves a downstream model's accuracy. The automatic data repair study~\cite{10.14778/3675034.3675051} shows why mixing these goals without stating them clearly can be misleading. In data lakes, this matters because a workflow that improves format consistency is not always the one that best supports later integration or analytics.
+Different preparation methods optimize different goals---consistency, net error reduction, or downstream model accuracy---and the automatic data repair study~\cite{10.14778/3675034.3675051} shows why mixing these goals without stating them clearly can be misleading.
 
 \paragraph{Deployment-aware objectives and evaluation.}
 Automatic Data Repair~\cite{10.14778/3675034.3675051} argues that repair methods should be evaluated by whether they actually reduce the total number of errors, not just by how many cells they change. It benchmarks repair methods across different datasets and error types and proposes strategies to prevent \emph{incorrect repairs}---situations where the repair itself introduces a new error.
@@ -931,9 +921,7 @@ Discovers similarity inclusion dependencies (approximate containment/foreign-key
 \end{tabularx}
 \end{table*}
 
-The integration literature organizes around four concerns. First, some methods focus on \emph{schema-level alignment and merge rules}---determining which columns match across tables and how to combine rows when sources provide only partial information. Second, others treat \emph{entity resolution as a multi-step workflow}: blocking (quickly filtering out non-matching pairs), matching (scoring candidate pairs), and clustering (grouping matched records). Third, a set of methods studies \emph{careful evaluation}, including whether matching errors are distributed fairly across demographic groups. Fourth, some methods produce \emph{reusable signals}---lightweight evidence such as approximate key relationships or learned embeddings---that can support multiple integration tasks at once.
-
-A broader trend across all four concerns is that integration is no longer viewed as just the final merge step. Many recent methods treat integration outputs---such as match scores or key relationships---as reusable evidence that feeds back into discovery and preparation. For example, knowing which columns matched well can improve future search ranking, and knowing which records were hard to match can guide targeted cleaning.
+The integration literature organizes around four concerns: (i)~schema-level alignment and merge rules, (ii)~entity resolution as a multi-step workflow (blocking, matching, clustering), (iii)~fairness-aware evaluation, and (iv)~reusable signals such as approximate key relationships or learned embeddings. A broader trend is that integration outputs increasingly feed back into discovery and preparation as reusable evidence.
 
 
 \subsubsection{Schema and Table Matching and Integration}
@@ -955,10 +943,7 @@ Magneto~\cite{10.14778/3742728.3742757} uses a two-stage design: a smaller, chea
 
 \subsubsection{Entity Matching and ER Workflows}
 
-Entity matching (EM)---also called entity resolution (ER), record linkage, or deduplication---determines whether two records refer to the same real-world entity. For example, do ``John Smith, 123 Main St'' and ``J.\ Smith, 123 Main Street'' describe the same person? The output is either pairwise match links or entity clusters (groups of records that all refer to the same entity). In data lakes, EM is usually part of a multi-step workflow because tables are discovered on-the-fly, schemas are inconsistent, and entity descriptions mix structured fields with free text.
-
-\paragraph{Workflow perspective.}
-A standard ER pipeline has three steps: (i)~\emph{blocking}---quickly filtering out pairs that are obviously different so the system does not have to compare every record against every other record (for example, only comparing records with the same first letter of the last name); (ii)~\emph{pairwise matching}---scoring each remaining pair on how likely they are to be the same entity; and (iii)~\emph{clustering}---grouping matched records and enforcing global consistency (for example, if A matches B and B matches C, then A, B, and C should all be in the same cluster).
+Entity matching (EM) determines whether two records refer to the same real-world entity. A standard ER pipeline has three steps: (i)~\emph{blocking} (filtering obvious non-matches), (ii)~\emph{pairwise matching} (scoring remaining pairs), and (iii)~\emph{clustering} (grouping matches and enforcing global consistency).
 
 \paragraph{Progressive and intent-aware matching.}
 Progressive EM~\cite{10.1145/3709715} studies pay-as-you-go ER: when time or budget is limited, the system prioritizes the most valuable comparisons first. It breaks the process into filtering, weighting, scheduling, and matching steps. FlexER~\cite{10.1145/3588722} shows that what counts as a ``match'' can depend on the downstream task---for example, two product listings might be considered the same for inventory purposes but different for price comparison---and models this as multi-label classification.
@@ -969,7 +954,7 @@ Obtaining labeled training data for EM is expensive. WeakSup GT Inference~\cite{
 
 \subsubsection{Evaluation, Fairness, and Feature Engineering for Matching}
 
-Recent EM work goes beyond simply reporting overall accuracy (F1 score). It treats matching as a configurable pipeline where every design choice matters: the blocking strategy determines which record pairs are even considered, error rates can differ across demographic groups (raising fairness concerns), and carefully chosen features can improve accuracy without expensive retraining.
+Recent EM work treats matching as a configurable pipeline where blocking strategies, fairness across demographic groups, and feature engineering all matter.
 
 \paragraph{Benchmarking filtering under quality--runtime targets.}
 Filtering Benchmarks~\cite{10184692} compares different blocking strategies (for example, rule-based blocking versus approximate nearest-neighbor retrieval) for candidate-pair generation. It shows that fair comparisons require careful tuning of many interacting parameters, and reports effectiveness alongside running time and scalability.
@@ -984,7 +969,7 @@ DescSim Rules~\cite{11112979} mines interpretable similarity rules by analyzing 
 \subsubsection{Integration Signals and Augmentation}
 \label{sec:integration-signals}
 
-Some integration methods focus not on producing a final merged table, but on generating \emph{reusable signals}---lightweight evidence that other tasks can use. For example, approximate foreign-key relationships can help prioritize which tables to join, and learned embeddings can support both matching and search. This category also covers \emph{targeted augmentation}: selectively pulling in additional data from external sources to fill gaps.
+Some integration methods generate \emph{reusable signals}---lightweight evidence such as approximate foreign-key relationships or shared embeddings---rather than a final merged table. This category also covers targeted augmentation from external sources.
 
 \paragraph{Relaxed dependency signals for noisy join discovery.}
 SIND~\cite{10.1145/3588929} introduces \emph{similarity inclusion dependencies} (sINDs). In a clean database, a foreign-key relationship means every value in one column appears exactly in another. But in a data lake with typos and formatting differences, exact containment rarely holds. sINDs relax this requirement: they only require \emph{sufficiently similar} counterparts (for example, ``New York'' matching ``New York City''), providing useful joinability hints even in noisy data.
@@ -999,19 +984,7 @@ Entity Augmentation~\cite{10.14778/3611479.3611535} studies how to enrich lake e
 Causal DI~\cite{10.14778/3603581.3603602} addresses a specific analytics need: ensuring that integrated data supports valid causal analysis. It identifies missing \emph{confounders}---variables that influence both the treatment and the outcome (for example, ``age'' when studying the effect of a drug)---and retrieves them from external sources. It then constructs a causal graph that guides which variables to integrate.
 
 
-\section{Distribution of Methods by Phase}
 \label{sec:pubs-by-phase}
-
-Table~\ref{tab:taxonomy-summary} shows a balanced spread: Discovery \& Search has 19 methods (38.8\%), Preparation \& Wrangling has 13 (26.5\%), and Integration \& Matching has 17 (34.7\%). The methods come from three venues: 22 from PVLDB, 15 from SIGMOD, and 12 from ICDE. A key observation is that recent data-lake work is not limited to one task at a time. Discovery methods increasingly build complete system stacks. Preparation methods often produce reusable automated workflows. Integration methods pay more attention to workflow design and evaluation beyond a single accuracy score. A strong cross-phase pattern is the reuse of shared signals---learned embeddings, profiling cues, and matching evidence---across stages.
-
-\paragraph{Discovery and Search.}
-The discovery subset is slightly larger than the other two, which makes sense given how hard it is to navigate a large lake before any cleaning or alignment can begin. Within this phase, recent work spans both operational systems and shared resources such as corpora (large shared table collections like GitTables~\cite{10.1145/3588710}), benchmarks, and embedding methods. This mix matters because retrieval quality depends not only on better ranking models, but also on having shared data for training and fair comparison.
-
-\paragraph{Preparation and Wrangling.}
-The preparation subset is smaller, but covers a wide range of outputs: some methods fix errors, some recommend transformations, some build reusable automated workflows, and others convert messy inputs into relational tables. This diversity suggests that preparation is still less standardized than discovery or entity matching. At the same time, it shows why preparation is central: if the data is not properly cleaned and structured, later matching and integration will produce poor results.
-
-\paragraph{Integration and Matching.}
-The integration subset is broad because it includes schema alignment, entity resolution, fairness-aware evaluation, and reusable signals. A striking trend is that recent methods focus more on workflow design and merge rules (how to combine partial information from different sources) than on a single matching model in isolation. This is visible in methods that study blocking strategies, scheduling, verification steps, or advanced merge operators like Full Disjunction \cite{10.14778/3574245.3574274}.
 
 
 % ==========================================================
@@ -1075,7 +1048,7 @@ This motivates clearer end-to-end reporting and shared pipeline test collections
 \subsection{Phases Are Connected but Evaluation Is Isolated}
 The three phases of a lake pipeline are tightly connected. Discovery controls which tables reach preparation and integration. Preparation changes how well those tables can be matched---for example, standardizing column formats makes later schema matching easier. End-to-end methods make these connections explicit by linking discovery, alignment, and integration in one workflow, or by reusing the same language model across discovery tasks \cite{10.1145/3555041.3589732,10.14778/3574245.3574274,10.14778/3659437.3659461,11112882}. Integration outputs (such as column matches and approximate key relationships) are also reused for retrieval and blocking, creating feedback loops \cite{10184556,10.1145/3588929}. Despite these connections, most methods report metrics for only one phase---for example, reporting retrieval precision without measuring whether the final merged table is correct. This can hide downstream problems: a discovery method with high precision may still retrieve tables that are hard to integrate. A practical lesson is to report stage-level results, maintenance cost, and at least one end-to-end outcome together.
 
-Another source of confusion is that methods in different phases optimize different goals, even when they look similar. Discovery may optimize ranking quality (``did we retrieve the right tables?''). Preparation may optimize consistency (``are all dates in the same format?'') or downstream model accuracy. Integration may optimize pair-level matching accuracy or the completeness of the final merged table. Without naming these differences, cross-method comparisons can look cleaner than they actually are.
+Methods in different phases also optimize different goals---ranking quality, format consistency, or match accuracy---and without naming these differences, cross-method comparisons can look cleaner than they actually are.
 
 \subsection{Ambiguity and User Intent}
 In data lakes, ambiguity is unavoidable. Metadata is often missing or vague, and the same query can have many plausible answers. For example, searching for ``customer data'' might return sales records, support tickets, or demographic profiles---all valid depending on the analyst's goal. Discovery systems address this by supporting interactive refinement rather than assuming a single correct answer \cite{10184768,10.14778/3685800.3685880}. On the integration side, the same pair of records can be considered a ``match'' or ``non-match'' depending on the downstream task---FlexER~\cite{10.1145/3588722} demonstrates this with intent-aware entity resolution. This challenges the single-ground-truth assumption built into many benchmarks. An important open problem is \emph{intent-conditioned evaluation}: explicitly varying the analyst's goal and reporting how robust each method is across different intents and domains.
@@ -1128,36 +1101,23 @@ Need standardized reporting of cost, calibration, and behavior under updates/shi
 \end{tabularx}
 \end{table*}
 
-Such a test collection is especially useful in data lakes because failures often occur at the boundaries between phases, not inside a single step. For example, a discovery method may retrieve tables that are topically relevant but structurally incompatible (different column types). A preparation workflow may improve local data quality while accidentally removing values needed for later matching. An integration workflow may show strong pairwise accuracy but still produce an incomplete or hard-to-use merged table. Shared test collections make these cross-phase trade-offs visible under one workload.
-
-\subsection{Comparison Clarity Across Phases}
-A persistent issue is that methods can look comparable even when they optimize very different goals. Discovery methods usually optimize ranking quality (``did we find the right tables?''), latency, or index cost. Preparation methods may optimize format consistency, error reduction, or downstream model performance. Integration methods may optimize column-match accuracy, entity-match accuracy, or the completeness of the final merged table. These are all valid goals, but they are not interchangeable: a method that scores highly on one metric may score poorly on another.
-
-Reading methods across phases makes this mismatch especially clear. BLEND~\cite{11112882} and related systems emphasize flexible execution across discovery operators, while CHORUS~\cite{10.14778/3659437.3659461} emphasizes shared semantic signals. In preparation, Automatic Data Repair~\cite{10.14778/3675034.3675051} shows that results differ depending on whether the goal is consistency or true error reduction. In integration, DIALITE~\cite{10.1145/3555041.3589732} and ALITE~\cite{10.14778/3574245.3574274} show that the quality of the final merged table depends not only on local match accuracy but also on how partial facts are assembled. Comparisons should therefore always state the optimization target explicitly.
-
-For this reason, we organize our comparisons by output type and phase role, rather than collapsing all methods into a single score. It is reasonable to say that recent work improves retrieval quality, lowers supervision cost, or improves merge rules in a specific setting. It is less safe to claim that one line of work is simply ``better'' without naming the goal, the output type, and the evaluation conditions.
+Such a test collection is especially useful because failures often occur at the boundaries between phases---for example, discovery returning structurally incompatible tables, or preparation removing values needed for later matching.
 
 \subsection{Threats to Validity}
-Like any survey, this study has limits. First, \emph{source coverage}: we searched three venues (SIGMOD, PVLDB, and ICDE), so methods published elsewhere may be missing, which could bias our phase counts and trend claims. Second, \emph{coding bias}: some methods could reasonably fit more than one category; we mitigate this by assigning each method exactly once based on its primary output. Third, the \emph{2022--2025 time window} narrows our view; important earlier work is cited but not covered in the same depth. Fourth, \emph{objective mismatch}: different methods optimize different goals (consistency, retrieval quality, downstream accuracy), so side-by-side comparison is inherently imperfect. Finally, limited code and data release by authors makes full reproducibility difficult. To avoid over-claiming, we keep phase-specific metrics separate and note where reproducibility is weak.
+This study has limits. We searched three venues (SIGMOD, PVLDB, ICDE), so methods published elsewhere may be missing. Some methods could fit more than one category; we mitigate this by assigning each to exactly one phase based on its primary output. The 2022--2025 window narrows our view; earlier work is cited but not covered in the same depth. Methods across phases optimize different goals (ranking quality, consistency, match accuracy), so side-by-side comparison is inherently imperfect. Limited code and data release makes full reproducibility difficult. We keep phase-specific metrics separate and note where reproducibility is weak.
 
 \subsection{Research Agenda}
-The literature suggests five concrete next steps:
-\begin{enumerate}
-  \item \textbf{End-to-end discovery evaluation.} Discovery methods should report downstream evidence, not only ranking quality. A practical setup is to fix the top-$k$ retrieved tables and measure how well they can be integrated on the same workload. Released artifacts should include queries, labels, and retrieved candidate sets.
-  \item \textbf{Joint preparation evaluation.} Preparation methods should evaluate both local repair quality (how many errors were fixed) and downstream utility (how much the repaired data improves a model) on the same tables. Released artifacts should include the original dirty data, the cleaned data, and processing scripts.
-  \item \textbf{Integrated integration metrics.} Integration methods should report both pairwise match accuracy and final-table completeness (are all expected rows and columns present?) on identical inputs, releasing merged tables and consistency checks.
-  \item \textbf{Update-aware studies.} Few current methods are tested under data updates. Rerunning workflows on time-sliced snapshots of a lake can measure quality drift and maintenance cost together.
-  \item \textbf{Cross-phase fairness and privacy audits.} Fairness and privacy should be audited across all three phases under one protocol, with subgroup definitions, policy rules, and stage-level audit reports released for reuse.
-\end{enumerate}
+Five concrete next steps emerge:
+(1)~\textbf{End-to-end discovery evaluation}---report downstream integration quality, not only ranking metrics.
+(2)~\textbf{Joint preparation evaluation}---measure both local repair quality and downstream utility on the same tables.
+(3)~\textbf{Integrated integration metrics}---report pairwise match accuracy alongside final-table completeness.
+(4)~\textbf{Update-aware studies}---test workflows on time-sliced lake snapshots to measure quality drift and maintenance cost.
+(5)~\textbf{Cross-phase fairness and privacy audits}---audit all three phases under one protocol with subgroup definitions and policy rules.
 
 % ==========================================================
 \section{Conclusion}
 % ==========================================================
-Data lakes make it easy to store many kinds of data together, but producing \emph{analytics-ready} datasets---data that is clean, well-structured, and ready for queries or machine learning---still requires coordinated work across discovery, preparation, and integration. In this survey, we reviewed 49 methods from 2022--2025 and organized them by what they produce: ranked candidate lists for exploration, cleaned and structured tables with reusable automated workflows, and column matches, entity matches, or merged datasets.
-
-Three broad patterns recur across the literature. First, discovery increasingly combines meaning-based representations (embeddings) with practical indexing and interactive exploration. Second, preparation increasingly produces repeatable automated workflows, often powered by language models, but still needs better safety checks and auditing to prevent errors. Third, integration increasingly depends on workflow design, awareness of the analyst's intent, and organizational policies---rather than relying on a single definition of what makes a ``correct'' match.
-
-A natural next step is pipeline-aware evaluation: shared test collections that connect stage-level results to end-to-end outcomes, under realistic conditions including data updates, ambiguous analyst intent, and explicit cost measurement.
+We reviewed 49 methods from 2022--2025 across discovery, preparation, and integration. Three patterns recur: discovery increasingly combines embeddings with practical indexing; preparation increasingly produces repeatable automated workflows but still needs safety checks; and integration increasingly depends on workflow design and analyst intent rather than a single matching score. A natural next step is pipeline-aware evaluation: shared test collections that connect stage-level results to end-to-end outcomes under realistic conditions including data updates, ambiguous intent, and explicit cost measurement.
 
 
 % ==========================================================
