@@ -288,7 +288,7 @@ We organize the 49 methods into a two-level taxonomy. The top level has three \e
   cat/.style={rounded corners=2pt, fill=white,
               inner xsep=10pt, inner ysep=3.5pt, align=center,
               minimum width=0.26\textwidth, line width=0.55pt},
-  itemtext/.style={anchor=west, text=black!85}
+  itemtext/.style={anchor=west, text=black!85, text width=0.27\textwidth}
 ]
 
 % Colors
@@ -310,11 +310,11 @@ We organize the 49 methods into a two-level taxonomy. The top level has three \e
 \node[title] (root) {\textbf{\normalsize Survey Taxonomy}};
 
 % --- Phase boxes ---
-\node[cat, draw=discC, text=discC, below=\gapTop of root, xshift=-0.33\textwidth] (disc)
+\node[cat, draw=discC, text=discC, below=\gapTop of root, xshift=-0.35\textwidth] (disc)
   {\textbf{\small Discovery and Search}};
 \node[cat, draw=prepC, text=prepC, below=\gapTop of root] (prep)
   {\textbf{\small Preparation and Wrangling}};
-\node[cat, draw=inteC, text=inteC, below=\gapTop of root, xshift= 0.33\textwidth] (inte)
+\node[cat, draw=inteC, text=inteC, below=\gapTop of root, xshift= 0.35\textwidth] (inte)
   {\textbf{\small Integration and Matching}};
 
 % --- Connector bar ---
