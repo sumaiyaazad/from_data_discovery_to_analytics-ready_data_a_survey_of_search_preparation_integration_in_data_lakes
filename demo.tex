@@ -115,9 +115,9 @@
 % ======================
 
 \begin{abstract}
-Organizations collect many kinds of data in data lakes---for example, spreadsheet-like tables, JSON or XML files, server logs, and fields extracted from documents. Before anyone can run queries or build dashboards, teams must (i)~find the right data sources, (ii)~clean and organize them, and (iii)~line up columns and records across sources so they can be combined.
+Organizations collect many kinds of data in data lakes. Before analysts can query those data or build dashboards from them, they must find relevant sources, clean and organize them, and combine information across sources.
 
-We review 49 methods published from 2022 to 2025 and group them by what they produce across three phases: \emph{Discovery \& Search} (ranked lists of relevant tables for keyword, join, and union queries), \emph{Preparation \& Wrangling} (cleaned tables and reusable processing workflows), and \emph{Integration \& Matching} (column-to-column matches, record-level entity matches, and merged tables). For each phase, we describe common tasks, system designs, and how methods are evaluated. We close with open challenges, including end-to-end evaluation, keeping results up to date as data changes, reliable use of language models for data tasks, and more.
+We review 47 methods published from 2022 to 2025 and organize them into three phases: \emph{Discovery \& Search}, \emph{Preparation \& Wrangling}, and \emph{Integration \& Matching}. For each phase, we describe common tasks, system designs, and evaluation practices. We close with open challenges in end-to-end evaluation, keeping results up to date as data changes, and reliable use of language models for data tasks.
 \end{abstract}
 
 % ======================
@@ -167,14 +167,14 @@ We review 49 methods published from 2022 to 2025 and group them by what they pro
 
 % ==========================================================
 \section{Introduction}
-Data lakes store many kinds of data together---spreadsheet-like tables, semi-structured files (such as JSON or XML), server logs, and fields pulled from documents---without requiring one fixed column layout (called a \emph{schema}) at load time.
+Data lakes~\cite{10.1145/3555041.3589409,10.14778/3750601.3750694} store many kinds of data together---spreadsheet-like tables, semi-structured files such as JSON or XML, server logs, and fields pulled from documents---without requiring one fixed column layout, or \emph{schema}, at load time.
 Loading data is easy, but using it later is hard.
 Before analysts can run queries, build dashboards, or train models, they must (1)~find the right data, (2)~clean and organize it, and (3)~combine it from multiple sources.
 
 \paragraph{Scope and terminology.}
 \emph{Discovery} means finding relevant tables or columns, including \emph{join} search~\cite{10.1145/3555041.3589409} (tables sharing a key column) and \emph{union} search~\cite{10.14778/3750601.3750694} (tables with compatible columns). \emph{Preparation} means cleaning errors, transforming values, and organizing raw data into usable tables or reusable workflows. \emph{Integration} means lining up columns across sources and producing a merged output; \emph{entity resolution (ER)} is the special case of deciding whether two records describe the same real-world thing. We use \emph{analytics-ready data} to mean data that is clean and structured enough for reports, statistics, or machine learning.
 
-Two trends make this pipeline harder: (1)~modern data lakes are large and weakly documented~\cite{10.1145/3555041.3589409,10.14778/3750601.3750694}; (2)~embedding-based and language-model-based methods now appear in discovery~\cite{10.14778/3659437.3659461}, preparation~\cite{10.14778/3611540.3611624}, and integration~\cite{10.14778/3742728.3742757}, raising concerns about cost, reliability, and privacy.
+Two trends make this pipeline harder: (1)~modern lakes are large and weakly documented; (2)~embedding-based and language-model-based methods now appear in discovery~\cite{10.14778/3659437.3659461}, preparation~\cite{10.14778/3611540.3611624}, and integration~\cite{10.14778/3742728.3742757}, raising concerns about cost, reliability, and privacy.
 
 This survey follows the full path from raw lake data to analytics-ready outputs in three phases:
 (1) \emph{Discovery \& Search} finds relevant tables and ranks candidates that could be joined or unioned;
@@ -235,32 +235,32 @@ S4 & \texttt{schema matching}, \texttt{entity resolution}, \texttt{record linkag
 
 \paragraph{Step 3: Sources and retrieval.}
 We scan proceedings of three top database venues---SIGMOD, PVLDB, and ICDE---by running title and abstract queries with the keyword groups S1--S4.
-The final collection includes 15 methods from SIGMOD, 22 from PVLDB, and 12 from ICDE.
+The final pool contains 49 papers: 15 from SIGMOD, 22 from PVLDB, and 12 from ICDE. Among them, 47 are method papers. The remaining 2 are discovery survey/tutorial papers that we keep for background discussion but do not count as methods.
 
 \paragraph{Step 4: Inclusion and exclusion.}
-We include methods that study a data lake or lakehouse setting and that propose a concrete technique for discovery, preparation, or integration. We exclude methods that do not target a lake setting.
+We include method papers that study a data lake or lakehouse setting and that propose a concrete technique for discovery, preparation, or integration. We exclude papers that do not target a lake setting. We also exclude survey and tutorial papers from the method count, while still discussing them as background where they help contextualize the discovery literature.
 
 \paragraph{Step 5: Coding rule.}
 Each method is assigned to exactly one phase based on its \emph{primary output}---the main thing it produces. Specifically: a method that outputs a ranked list of candidate tables goes into Discovery; a method that outputs a cleaned table, transformed data, or a reusable processing workflow goes into Preparation; and a method that outputs column matches, record-level entity matches, or a merged dataset goes into Integration. This rule prevents double-counting and makes the taxonomy clear.
 
 \paragraph{Step 6: Synthesis.}
-We group the selected methods by the taxonomy defined in Section~\ref{sec:taxonomy-classes} and summarize the distribution across phases in Table~\ref{tab:taxonomy-summary}. The later literature-review sections describe techniques and evaluation practices within each category.
+We group the 47 selected method papers by the taxonomy defined in Section~\ref{sec:taxonomy-classes} and summarize the distribution across phases in Table~\ref{tab:taxonomy-summary}. The later literature-review sections describe techniques and evaluation practices within each category, while also noting the discovery survey/tutorial papers separately where they provide useful context.
 
 % ---------- Table: Top-level distribution ----------
 \begin{table}[!htbp]
-  \caption{Top-level taxonomy distribution.}
+  \caption{Top-level taxonomy distribution of method papers.}
   \label{tab:taxonomy-summary}
   \centering
   \tbl
   \begin{tabular}{lr}
     \toprule
-    Category & \# Methods \\
+    Category & \# Method Papers \\
     \midrule
-    Discovery and Search & 19 \\
+    Discovery and Search & 17 \\
     Preparation and Wrangling & 13 \\
     Integration and Matching & 17 \\
     \midrule
-    Total & 49 \\
+    Total & 47 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -473,10 +473,10 @@ These three classes form a single pipeline: discovery narrows a lake to candidat
 
 % ----------------------
 \subsection{Discovery and Search}
-Discovery and search form the entry point of the lake-to-analytics pipeline. Imagine a data lake with thousands of tables, many lacking descriptions or consistent column names. An analyst looking for customer-address data must somehow find the right tables among all of these. Discovery methods help by surfacing a small, ranked set of relevant data sources for exploration or enrichment. In the methods we reviewed, discovery usually combines three ingredients: understanding what tables contain, retrieving the most relevant ones, and letting users interact to refine results. Table~\ref{tab:discovery-methods} summarizes this phase by category, keywords, and one-line contribution.
+Discovery and search form the entry point of the lake-to-analytics pipeline. Imagine a data lake with thousands of tables, many lacking descriptions or consistent column names. An analyst looking for customer-address data must somehow find the right tables among all of these. Discovery methods help by surfacing a small, ranked set of relevant data sources for exploration or enrichment. In the discovery literature we reviewed, this phase usually combines three ingredients: understanding what tables contain, retrieving the most relevant ones, and letting users interact to refine results. Table~\ref{tab:discovery-methods} summarizes this phase by category, keywords, and one-line contribution. It includes 17 counted method papers plus 2 survey/tutorial papers that we discuss for context.
 
 \begin{table*}[!htbp]
-\caption{Discovery \& Search methods mapped to taxonomy.}
+\caption{Discovery \& Search papers mapped to taxonomy.}
 \label{tab:discovery-methods}
 \tbl
 \begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
