@@ -64,7 +64,7 @@ Data lakes store heterogeneous tables, semi-structured files, logs, spreadsheets
 
 This is also a human-centered systems problem. Analysts still interpret weak metadata, validate repairs, inspect suggested joins, and decide whether automated outputs are trustworthy. Useful systems therefore need more than accuracy; they must reduce manual effort while preserving control when the lake is messy, incomplete, or policy constrained.
 
-Recent database work from 2022 to 2025 has shifted from metadata-driven retrieval and rule-based cleaning toward semantic retrieval, pipeline synthesis, and LM-assisted integration, especially in methods that rely on LLMs. The literature is most coherent when read as a pipeline from discovery to analytics-ready data in lake or closely related lakehouse settings.
+Recent database work from 2022 to 2025 has shifted from metadata-driven retrieval and rule-based cleaning toward semantic retrieval, pipeline synthesis, and language-model (LM)-assisted integration, especially in methods that rely on large language models (LLMs). The literature is most coherent when read as a pipeline from discovery to analytics-ready data in lake or closely related lakehouse settings.
 
 Across that pipeline, recurring evaluation criteria include retrieval quality, downstream utility, matching accuracy, scalability, runtime cost, robustness to weak metadata, and the amount of human supervision required. These criteria point to common challenges: large and evolving lakes, ambiguous user intent, unsafe automation, and limited end-to-end evaluation even when individual stages perform well.
 
@@ -255,9 +255,9 @@ Supervision cost, partial overlap, fairness, privacy, policy constraints, and in
 \noindent Figure~\ref{fig:taxonomy} shows how the literature branches into subproblems, while the Table ~\ref{tab:phase-summary} shows what each branch actually produces for the next stage of the pipeline. Together they explain why the survey moves from finding candidate data, to stabilizing that data, to merging it into an analytics-ready result.
 
 \subsection{Discovery and Search}
-Discovery is the opening stage of the story: before any repair or integration can happen, the analyst needs a plausible set of candidate tables, columns, or views. Table~\ref{tab:discovery-methods} organizes this stage by showing how the literature moves from end-to-end search systems, to learned retrieval signals, to join/union relationship search, and finally to the shared resources that make discovery evaluation possible.
+Discovery is the opening stage of the story: before any repair or integration can happen, the analyst needs a plausible set of candidate tables, columns, or views. Table~\ref{tab:discovery-methods} organizes this stage by showing how the literature moves from end-to-end search systems, to learned retrieval signals, to join/union relationship search, and finally to the shared resources that make discovery evaluation possible. The table is included to make the discovery taxonomy concrete and to show which paper families dominate this phase. Read it by category first, then by representative papers and the retrieval problems they emphasize.
 \begin{table*}[!htbp]
-\caption{Discovery \& Search papers mapped to taxonomy.}
+\caption{Discovery \& Search papers mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:discovery-methods}
 \tbl
 \begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
@@ -379,9 +379,9 @@ A second category replaces surface similarity with richer semantics. CMDL, Starm
 Discovery also depends on shared infrastructure. Rottnest, GitTables, and LakeBench support indexing, large-scale evaluation, and reproducible workloads, while the recent discovery surveys help stabilize terminology and task definitions. That support matters because strong ranking alone is not enough: discovery is only successful when the returned candidates reduce downstream preparation work instead of creating more of it.
 
 \subsection{Preparation and Wrangling}
-Once discovery has narrowed the lake, the survey moves to the middle stage: turning promising candidates into dependable inputs. Table~\ref{tab:prep-methods} connects papers that might otherwise look separate by showing that repair, workflow synthesis, relationalization, and ingestion debugging all answer the same question: how do we make selected data usable enough for later analysis and integration?
+Once discovery has narrowed the lake, the survey moves to the middle stage: turning promising candidates into dependable inputs. Table~\ref{tab:prep-methods} connects papers that might otherwise look separate by showing that repair, workflow synthesis, relationalization, and ingestion debugging all answer the same question: how do we make selected data usable enough for later analysis and integration? The table is included to show that seemingly different papers are solving the same middle-stage usability problem. Read it by category first, then by representative papers and the kinds of usable outputs they try to produce.
 \begin{table*}[!htbp]
-\caption{Preparation \& Wrangling methods mapped to taxonomy.}
+\caption{Preparation \& Wrangling methods mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:prep-methods}
 \tbl
 \begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
@@ -471,9 +471,9 @@ Another strand treats preparation as workflow construction. CtxPipe, HAIPipe, Fe
 Preparation therefore exposes a tension between quick automation and reusable process design. LM-based curation can shorten time to first result, but repeated use still requires provenance, validation, and rerunnable workflows. Pipeline-construction systems help when the same analytical pattern recurs across datasets, whereas relationalization systems matter when later matching depends on structure that is still implicit in the raw inputs.
 
 \subsection{Integration and Matching}
-Integration is the stage where cleaned candidates must become one coherent analytical output. Table~\ref{tab:integration-methods} groups this stage into schema/table integration, ER workflows, evaluation-oriented matching work, and reusable integration signals.
+Integration is the stage where cleaned candidates must become one coherent analytical output. Table~\ref{tab:integration-methods} groups this stage into schema/table integration, ER workflows, evaluation-oriented matching work, and reusable integration signals. The table is included to distinguish alignment evidence, workflow style, and merge concerns that otherwise get conflated in integration papers. Read it by category first, then by representative papers and the matching or merge issues each one foregrounds.
 \begin{table*}[!htbp]
-\caption{Integration \& Matching methods mapped to taxonomy.}
+\caption{Integration \& Matching methods mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:integration-methods}
 \tbl
 \begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
