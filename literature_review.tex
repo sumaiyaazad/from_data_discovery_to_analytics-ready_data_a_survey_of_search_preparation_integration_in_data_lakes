@@ -95,7 +95,7 @@ Using that rule, the literature forms three main classes with recurring subcateg
 \subsection{Scope of the Reviewed Literature}
 The reviewed corpus contains 49 papers published between 2022 and 2025 in the SIGMOD International Conference on Management of Data (SIGMOD), the Proceedings of the VLDB Endowment (PVLDB), and the International Conference on Data Engineering (ICDE). Forty-seven are method papers that fit one of the three pipeline phases, and two are survey-style discovery references used to frame terminology and evaluation practice. Each included method is assigned to exactly one phase by its primary output. This compresses real overlap, but it keeps the taxonomy consistent and makes phase-level comparison easier to interpret.
 
-Table~\ref{tab:search-strings} records the four search-term groups used to keep the corpus aligned with the pipeline studied in this review. The first two groups target discovery and relationship search, the third targets preparation and workflow construction, and the fourth targets matching and integration. This table therefore connects corpus construction with the analysis developed in the rest of the survey's taxonomy, categorization and discussion.
+Table~\ref{tab:search-strings} records the four search-term groups used to keep the corpus aligned with the pipeline studied in this review. The first two groups target discovery and relationship search, the third targets preparation and workflow construction, and the fourth targets matching and integration. This table therefore connects corpus construction with the analysis developed in the rest of the survey's categorization and discussion.
 
 \begin{table}[!htbp]
 \caption{Search term groups used for queries over data lakes.}
@@ -255,7 +255,7 @@ Supervision cost, partial overlap, fairness, privacy, policy constraints, and in
 \noindent Figure~\ref{fig:taxonomy} shows how the literature branches into subproblems, while the Table ~\ref{tab:phase-summary} shows what each branch actually produces for the next stage of the pipeline. Together they explain why the survey moves from finding candidate data, to stabilizing that data, to merging it into an analytics-ready result.
 
 \subsection{Discovery and Search}
-Discovery is the opening stage of the workflow: before any repair or integration can happen, the analyst needs a plausible set of candidate tables, columns, or views. Table~\ref{tab:discovery-methods} organizes this stage by showing how the literature moves from end-to-end search systems, to learned retrieval signals, to join/union relationship search, and finally to the shared resources that make discovery evaluation possible. The table is included to make the discovery taxonomy concrete and to show which paper families dominate this phase. Read it by category first, then by representative papers and the retrieval problems they emphasize.
+Discovery is the opening stage of the workflow: before any repair or integration can happen, the analyst needs a plausible set of candidate tables, columns, or views. Table~\ref{tab:discovery-methods} organizes this stage by showing how the literature moves from end-to-end search systems, to learned retrieval signals, to join/union relationship search, and finally to the shared resources that make discovery evaluation possible. The table is included to make the discovery taxonomy concrete and to show which paper families dominate this phase. The categories show the main lines of work, while the representative papers illustrate the retrieval problems each line emphasizes.
 \begin{table*}[!htbp]
 \caption{Discovery \& Search papers mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:discovery-methods}
@@ -315,7 +315,7 @@ Learns multi-aspect column representations and adaptively fuses them to boost un
 ~ &
 TabSketchFM~\cite{11113110} &
 sketches, tokens &
-Uses compact column sketches with a pretrained tabular model to scale discovery under token/compute constraints. \\
+Uses compact column sketches with a pretrained tabular model to scale discovery under compute constraints. \\
 
 \midrule
 
@@ -379,7 +379,7 @@ A second category replaces surface similarity with richer semantics. CMDL, Starm
 Discovery also depends on shared infrastructure. Rottnest, GitTables, and LakeBench support indexing, large-scale evaluation, and reproducible workloads, while the recent discovery surveys help stabilize terminology and task definitions. That support matters because strong ranking alone is not enough: discovery is only successful when the returned candidates reduce downstream preparation work instead of creating more of it.
 
 \subsection{Preparation and Wrangling}
-Once discovery has narrowed the lake, the survey moves to the middle stage: turning promising candidates into dependable inputs. Table~\ref{tab:prep-methods} connects papers that might otherwise look separate by showing that repair, workflow synthesis, relationalization, and ingestion debugging all answer the same question: how do we make selected data usable enough for later analysis and integration? The table is included to show that seemingly different papers are solving the same middle-stage usability problem. Read it by category first, then by representative papers and the kinds of usable outputs they try to produce.
+Once discovery has narrowed the lake, the survey moves to the middle stage: turning promising candidates into dependable inputs. Table~\ref{tab:prep-methods} connects papers that might otherwise look separate by showing that repair, workflow synthesis, relationalization, and ingestion debugging all answer the same question: how do we make selected data usable enough for later analysis and integration? The table is included to show that seemingly different papers are solving the same middle-stage usability problem. Its categories mark the main preparation tasks, and the representative papers show the kinds of usable outputs each task is designed to produce.
 \begin{table*}[!htbp]
 \caption{Preparation \& Wrangling methods mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:prep-methods}
@@ -471,7 +471,7 @@ Another strand treats preparation as workflow construction. CtxPipe, HAIPipe, Fe
 Preparation therefore exposes a tension between quick automation and reusable process design. LM-based curation can shorten time to first result, but repeated use still requires provenance, validation, and rerunnable workflows. Pipeline-construction systems help when the same analytical pattern recurs across datasets, whereas relationalization systems matter when later matching depends on structure that is still implicit in the raw inputs.
 
 \subsection{Integration and Matching}
-Integration is the stage where cleaned candidates must become one coherent analytical output. Table~\ref{tab:integration-methods} groups this stage into schema/table integration, ER workflows, evaluation-oriented matching work, and reusable integration signals. The table is included to distinguish alignment evidence, workflow style, and merge concerns that otherwise get conflated in integration papers. Read it by category first, then by representative papers and the matching or merge issues each one foregrounds.
+Integration is the stage where cleaned candidates must become one coherent analytical output. Table~\ref{tab:integration-methods} groups this stage into schema/table integration, ER workflows, evaluation-oriented matching work, and reusable integration signals. The table is included to distinguish alignment evidence, workflow style, and merge concerns that otherwise are not clearly separated in integration papers. The categories separate the main integration choices, and the representative papers show which matching or merge issues those choices bring to the foreground.
 \begin{table*}[!htbp]
 \caption{Integration \& Matching methods mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:integration-methods}
@@ -533,7 +533,7 @@ Active-learning approach for low-resource EM that selects informative pairs via 
 Evaluation, fairness, and feature engineering for matching &
 Fairness Lens~\cite{10.14778/3611479.3611525} &
 fairness, bias &
-Audits EM through fairness by constructing social datasets and analyzing disparate error rates under imbalance. \\
+Audits EM through fairness by constructing social datasets and analyzing unequal error rates under class imbalance. \\
 
 ~ &
 Filtering Benchmarks~\cite{10184692} &
@@ -548,7 +548,7 @@ Introduces description-similarity rules to engineer informative, interpretable E
 ~ &
 Relation Enrichment~\cite{10.14778/3681954.3681987} &
 enrichment, attributes &
-Boosts ER quality by enriching related tuples with additional attributes from auxiliary sources. \\
+Boosts ER quality by enriching related tuples with additional attributes from additional sources. \\
 
 \midrule
 
@@ -648,7 +648,7 @@ Most papers still report metrics for a single phase. A major need is benchmark d
 Analytical intent is often ambiguous in data lakes, so future systems should support interactive refinement and make uncertainty visible instead of hiding it. This matters even more as language-model-based discovery, preparation, and integration become common. The open problem is not only how to automate more, but how to automate safely through validation hooks, rollback mechanisms, constraint checks, and confidence-aware execution. Analysts should be able to inspect competing joins, repairs, and match definitions before those choices become part of a final dataset.
 
 \paragraph{Scale, Maintenance, and Governance.}
-At realistic lake scale, infrastructure costs matter as much as model quality. Discovery systems must maintain indexes and embeddings, preparation systems may execute many candidate workflows, and integration systems often spend most of their time in blocking, filtering, or label acquisition. Future work should therefore report runtime-quality trade-offs explicitly and treat governance, fairness, and privacy rules as planning constraints rather than as after-the-fact filters. Incremental maintenance is especially important when lakes evolve continuously instead of by occasional rebuilds.
+At realistic lake scale, infrastructure costs matter as much as model quality. Discovery systems must maintain indexes and embeddings, preparation systems may execute many candidate workflows, and integration systems often spend most of their time in blocking, filtering, or label acquisition. Future work should report speed-quality trade-offs explicitly and incorporate governance, fairness, and privacy requirements into the workflow design rather than checking them only after results are produced. Incremental maintenance is especially important when lakes evolve continuously instead of by occasional rebuilds.
 
 \paragraph{Evolving Lakes and Shared Resources.}
 Many systems still assume that the analytical challenge begins only after data has already been made tabular, but real lakes evolve in format, nesting depth, and storage location over time. Future work should connect discovery, preparation, and integration more directly for semi-structured and changing data. It also needs shared test collections that cover the full pipeline, maintenance cost, and boundary failures under evolving-lake conditions.
