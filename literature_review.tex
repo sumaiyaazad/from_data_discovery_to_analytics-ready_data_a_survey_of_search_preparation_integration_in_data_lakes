@@ -1,0 +1,662 @@
+\documentclass[sigconf]{acmart}
+
+\usepackage{xspace}
+\usepackage{graphics}
+\usepackage[T1]{fontenc}
+\usepackage{times}
+\usepackage{color}
+\usepackage{booktabs}
+\usepackage{textcomp}
+\usepackage{microtype}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{caption}
+\usepackage{array}
+\usepackage{ragged2e}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,calc}
+
+\hypersetup{
+  colorlinks,
+  urlcolor=blue}
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+\AtBeginDocument{%
+  \providecommand\BibTeX{{%
+    \normalfont B\kern-0.5em{\scshape i\kern-0.25em b}\kern-0.8em\TeX}}}
+
+\setcopyright{none}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\settopmatter{printacmref=false}
+
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\newcommand{\tbl}{%
+  \scriptsize
+  \setlength{\tabcolsep}{4pt}%
+  \renewcommand{\arraystretch}{1.12}%
+}
+
+\begin{document}
+\pagestyle{plain}
+
+\title{From Data Discovery to Analytics-Ready Data:\\A Survey of Search, Preparation, and Integration in Data Lakes}
+
+\author{Sumaiya Azad}
+\affiliation{%
+  \institution{University of Utah}
+  \city{Salt Lake City}
+  \state{Utah}
+  \country{USA}}
+\email{sumaiya.azad@utah.edu}
+
+\renewcommand{\shortauthors}{Azad}
+
+\begin{abstract}
+Data lakes promise flexible storage, but analysts rarely receive data in a form ready for dashboards, statistical analysis, or machine learning. Between raw lake contents and analytics-ready outputs, users must discover relevant sources, prepare noisy and heterogeneous data, and integrate partially overlapping tables. This literature review organizes recent work into three phases: Discovery and Search, Preparation and Wrangling, and Integration and Matching. It summarizes representative methods, explains the basis of the taxonomy, compares trade-offs in accuracy, automation, scalability, and human effort, and highlights open problems in end-to-end evaluation, safe automation, governance, and evolving data. The review shows how current systems move from data-lake search to usable analytical datasets, and where important research gaps remain.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+Data lakes store heterogeneous tables, semi-structured files, logs, spreadsheets, and extracted document fields without forcing a single schema at ingestion time. Existing discovery surveys explain why this flexibility is attractive for business intelligence, scientific analysis, and machine learning, while also making data harder to retrieve, interpret, and combine~\cite{10.1145/3555041.3589409,10.14778/3750601.3750694}. Before analysts can answer a question, they must discover relevant sources, prepare them for use, and integrate partial evidence across tables.
+
+This is also a human-centered systems problem. Analysts still interpret weak metadata, validate repairs, inspect suggested joins, and decide whether automated outputs are trustworthy. Useful systems therefore need more than accuracy; they must reduce manual effort while preserving control when the lake is messy, incomplete, or policy constrained.
+
+Recent work has shifted from metadata-driven retrieval and rule-based cleaning toward semantic retrieval, pipeline synthesis, and model-assisted integration. This review focuses on database research from 2022 to 2025 and studies the full path from discovery to analytics-ready data in lake or closely related lakehouse settings.
+
+Across the literature, the recurring evaluation criteria are retrieval quality, downstream utility, matching accuracy, scalability, runtime cost, robustness to weak metadata, and the amount of human supervision required. These criteria expose common challenges: large and evolving lakes, ambiguous user intent, unsafe automation, and weak end-to-end evaluation even when individual stages perform well.
+
+\subsubsection*{Contributions of this Survey.}
+This review organizes recent work as a pipeline from discovery to analytics-ready outputs, groups methods by primary output to form a clear taxonomy, contrasts where major method families work well or fail, and identifies open directions in evaluation, safe automation, governance, and benchmark design.
+
+\subsubsection*{Organization.}
+Section~2 defines the core terminology used throughout the paper. Section~3 surveys prior work and introduces the taxonomy used for categorization. Section~4 compares method families and discusses their trade-offs. Section~5 outlines open challenges and future directions, and Section~6 concludes.
+
+\section{Background and Preliminaries}
+\subsection{Core Terms}
+A \emph{data lake} is a repository that stores heterogeneous data without requiring a strict schema in advance. \emph{Analytics-ready data} is data that has been cleaned, structured, and integrated well enough to support reporting, statistics, or downstream models. In this review, \emph{Discovery and Search} covers keyword search, join search, union search, and interactive exploration; its outputs are typically ranked tables, columns, views, or candidate augmentations. \emph{Preparation and Wrangling} covers cleaning, transformation, relationalization, and workflow construction; its outputs are cleaned tables, structured views, or rerunnable pipelines. \emph{Integration and Matching} covers schema matching, entity resolution, and table integration; its outputs are correspondences, resolved entities, or merged results.
+
+Join search finds tables that can be linked through a shared key, while union search finds tables whose compatible columns allow them to be stacked together. Schema matching decides which columns correspond across tables, entity resolution decides whether two records refer to the same real-world entity, and integration uses those correspondences to produce a combined result.
+
+\subsection{A Pipeline View}
+The key idea behind this survey is that these tasks form a pipeline. Discovery narrows a large lake to a small set of plausible candidates. Preparation turns those candidates into stable and usable inputs. Integration aligns and merges them into an output suitable for analysis. Treating these stages together matters because errors propagate across them: weak retrieval can surface irrelevant tables, incomplete preparation can preserve format conflicts, and poor integration can collapse useful but partial evidence.
+
+\subsection{Evaluation Criteria}
+Although each phase uses different metrics, several criteria appear throughout the literature. Discovery studies usually report ranking quality, coverage, and retrieval speed. Preparation studies emphasize net error reduction, downstream task utility, and repeatability of workflows. Integration studies focus on matching quality, merge completeness, supervision cost, fairness, and policy constraints. These criteria motivate the taxonomy and the cross-phase comparison used later in the review.
+
+\section{Survey and Categorization of Prior Work}
+\subsection{Basis of Categorization}
+This review groups recent work by \emph{primary output}. A method belongs to Discovery and Search if it mainly returns ranked candidates for exploration, to Preparation and Wrangling if it mainly returns cleaned tables or reusable workflows, and to Integration and Matching if it mainly returns correspondences, entity matches, or merged tables. This rule avoids double counting when one system touches more than one stage.
+
+Using that rule, the literature forms three main classes with recurring subcategories. Discovery includes end-to-end search systems, semantic retrieval, join and union search, and benchmark-oriented work. Preparation includes cleaning and repair, pipeline synthesis, and structuring messy inputs. Integration includes schema alignment, entity-resolution workflows, fairness-aware evaluation, and reusable integration signals.
+
+\subsection{Scope of the Reviewed Literature}
+The reviewed corpus contains 49 papers published between 2022 and 2025 in SIGMOD, PVLDB, and ICDE. Forty-seven are method papers that fit one of the three pipeline phases, and two are survey-style discovery references used to frame terminology and evaluation practice. Each included method is assigned to exactly one phase by its primary output. This compresses real overlap, but it keeps the taxonomy consistent and makes phase-level comparison easier to interpret.
+
+Table~\ref{tab:search-strings} records the four search-term groups used to keep the corpus aligned with the pipeline studied in this review. The first two groups target discovery and relationship search, the third targets preparation and workflow construction, and the fourth targets matching and integration. This table therefore serves as the bridge between corpus construction and the literature story told in the rest of the survey.
+
+\begin{table}[!htbp]
+\caption{Search term groups used for queries over data lakes.}
+\label{tab:search-strings}
+\centering
+\tbl
+\begin{tabularx}{\columnwidth}{@{}p{8mm}X@{}}
+\toprule
+\textbf{ID} & \textbf{Query family (examples of task keywords)} \\
+\midrule
+S1 & \texttt{discovery}, \texttt{search}, \texttt{table search}, \texttt{dataset retrieval}, \texttt{exploration} \\
+S2 & \texttt{joinable}, \texttt{unionable}, \texttt{overlap}, \texttt{join discovery}, \texttt{union discovery} \\
+S3 & \texttt{wrangling}, \texttt{preparation}, \texttt{cleaning}, \texttt{transform}, \texttt{pipeline synthesis} \\
+S4 & \texttt{schema matching}, \texttt{entity resolution}, \texttt{record linkage}, \texttt{data integration}, \texttt{LLM} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+With that scope fixed, the rest of this section is structured around three stages. Figure~\ref{fig:taxonomy} gives the high-level map, Table~\ref{tab:phase-summary} turns that map into outputs and recurring concerns, and the later tables unpack the representative papers inside each phase.
+
+\begin{figure*}[t]
+\centering
+\scriptsize
+\begin{tikzpicture}[
+  font=\scriptsize,
+  >=Latex,
+  conn/.style={draw=black!55, line width=0.45pt},
+  title/.style={draw=black!55, rounded corners=2pt, fill=black!6,
+                inner xsep=10pt, inner ysep=4pt, align=center,
+                minimum width=0.44\textwidth},
+  cat/.style={rounded corners=2pt, fill=white,
+              inner xsep=10pt, inner ysep=3.5pt, align=center,
+              minimum width=0.26\textwidth, line width=0.55pt},
+  itemtext/.style={anchor=west, text=black!85, text width=0.27\textwidth}
+]
+
+\definecolor{discC}{HTML}{8B1E2D}
+\definecolor{prepC}{HTML}{7A3DB8}
+\definecolor{inteC}{HTML}{0B4F6C}
+
+\def\bs{1.6mm}
+\def\gapTop{5.5mm}
+\def\barDrop{2.4mm}
+\def\stem{2.2mm}
+\def\ygap{3.3mm}
+\def\discYgap{4.0mm}
+\def\inteYgap{4.3mm}
+\def\xoff{6.0mm}
+\def\spineInset{6mm}
+
+\node[title] (root) {\textbf{\normalsize Survey Taxonomy}};
+
+\node[cat, draw=discC, text=discC, below=\gapTop of root, xshift=-0.35\textwidth] (disc)
+  {\textbf{\small Discovery and Search}};
+\node[cat, draw=prepC, text=prepC, below=\gapTop of root] (prep)
+  {\textbf{\small Preparation and Wrangling}};
+\node[cat, draw=inteC, text=inteC, below=\gapTop of root, xshift= 0.35\textwidth] (inte)
+  {\textbf{\small Integration and Matching}};
+
+\coordinate (barC) at ($(root.south)+(0,-\barDrop)$);
+\coordinate (barL) at ($(disc.north |- barC)$);
+\coordinate (barR) at ($(inte.north |- barC)$);
+
+\draw[conn] (root.south) -- (barC);
+\draw[conn] (barL) -- (barR);
+\draw[conn] (barL) -- (disc.north);
+\draw[conn] (barC) -- (prep.north);
+\draw[conn] (barR) -- (inte.north);
+
+\coordinate (discStem) at ($(disc.south west)+(\spineInset,0)$);
+\coordinate (discB1)   at ($(discStem)+(0,-\stem)$);
+\coordinate (discB2)   at ($(discB1)+(0,-\discYgap)$);
+\coordinate (discB3)   at ($(discB2)+(0,-\discYgap)$);
+\coordinate (discB4)   at ($(discB3)+(0,-\discYgap)$);
+
+\draw[conn, draw=discC] (discStem) -- ($(discB4)+(0,-1.4mm)$);
+
+\foreach \p/\txt in {
+  discB1/{End-to-end discovery and exploration systems},
+  discB2/{Semantic and learned representations},
+  discB3/{Search for joinable and unionable tables and overlap estimation},
+  discB4/{Benchmarks, corpora, and surveys for discovery}
+}{
+  \fill[discC] (\p) rectangle ++(\bs,\bs);
+  \node[itemtext] at ($(\p)+(\xoff,0.3mm)$) {\txt};
+}
+
+\coordinate (prepStem) at ($(prep.south west)+(\spineInset,0)$);
+\coordinate (prepB1)   at ($(prepStem)+(0,-\stem)$);
+\coordinate (prepB2)   at ($(prepB1)+(0,-\ygap)$);
+\coordinate (prepB3)   at ($(prepB2)+(0,-\ygap)$);
+
+\draw[conn, draw=prepC] (prepStem) -- ($(prepB3)+(0,-1.4mm)$);
+
+\foreach \p/\txt in {
+  prepB1/{Cleaning, repair, and LM-based curation},
+  prepB2/{Pipeline synthesis and augmentation for ML analytics},
+  prepB3/{Structuring, relationalization, and ingestion debugging}
+}{
+  \fill[prepC] (\p) rectangle ++(\bs,\bs);
+  \node[itemtext] at ($(\p)+(\xoff,0.3mm)$) {\txt};
+}
+
+\coordinate (inteStem) at ($(inte.south west)+(\spineInset,0)$);
+\coordinate (inteB1)   at ($(inteStem)+(0,-\stem)$);
+\coordinate (inteB2)   at ($(inteB1)+(0,-\inteYgap)$);
+\coordinate (inteB3)   at ($(inteB2)+(0,-\inteYgap)$);
+\coordinate (inteB4)   at ($(inteB3)+(0,-\inteYgap)$);
+
+\draw[conn, draw=inteC] (inteStem) -- ($(inteB4)+(0,-1.4mm)$);
+
+\fill[inteC] (inteB1) rectangle ++(\bs,\bs);
+\node[itemtext] at ($(inteB1)+(\xoff,-0.2mm)$)
+  {Schema and table matching and multi-table integration};
+
+\foreach \p/\txt in {
+  inteB2/{Entity matching and ER workflows},
+  inteB3/{Evaluation, fairness, and feature engineering for matching},
+  inteB4/{Integration signals and augmentation}
+}{
+  \fill[inteC] (\p) rectangle ++(\bs,\bs);
+  \node[itemtext] at ($(\p)+(\xoff,0.3mm)$) {\txt};
+}
+
+\end{tikzpicture}
+\caption{Taxonomy of data lake research from discovery and search to analytics-ready outputs via preparation and integration.}
+\label{fig:taxonomy}
+\end{figure*}
+
+\begin{table*}[t]
+\caption{Phase-level summary of outputs, recurring tasks, and common concerns.}
+\label{tab:phase-summary}
+\centering
+\tbl
+\begin{tabularx}{\textwidth}{@{}p{29mm}p{34mm}Y p{45mm}@{}}
+\toprule
+\textbf{Phase} & \textbf{Primary output} & \textbf{Recurring tasks} & \textbf{Common concerns} \\
+\midrule
+Discovery and Search &
+Ranked candidate tables, columns, views, or augmentations &
+Keyword search, join search, union search, overlap estimation, view discovery, interactive exploration &
+Weak metadata, large search space, ambiguity, index maintenance, and runtime cost \\
+\addlinespace[0.25em]
+Preparation and Wrangling &
+Cleaned tables, structured views, transformed tables, or rerunnable workflows &
+Repair, transformation recommendation, pipeline synthesis, feature augmentation, relationalization, ingestion debugging &
+Unsafe edits, limited validation, repeatability, downstream utility, and evolving data \\
+\addlinespace[0.25em]
+Integration and Matching &
+Column matches, entity matches, merge plans, reusable evidence, or merged outputs &
+Schema matching, entity resolution, blocking, merge-rule design, external augmentation, fairness auditing &
+Supervision cost, partial overlap, fairness, privacy, policy constraints, and intent sensitivity \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+\noindent Figure~\ref{fig:taxonomy} shows how the literature branches into subproblems, while the Table ~\ref{tab:phase-summary} shows what each branch actually produces for the next stage of the pipeline. Together they explain why the survey moves from finding candidate data, to stabilizing that data, to merging it into an analytics-ready result.
+
+\subsection{Discovery and Search}
+Discovery is the opening stage of the story: before any repair or integration can happen, the analyst needs a plausible set of candidate tables, columns, or views. Table~\ref{tab:discovery-methods} organizes this stage by showing how the literature moves from end-to-end search systems, to learned retrieval signals, to join/union relationship search, and finally to the shared resources that make discovery evaluation possible.
+\begin{table*}[!htbp]
+\caption{Discovery \& Search papers mapped to taxonomy.}
+\label{tab:discovery-methods}
+\tbl
+\begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
+\toprule
+\textbf{Category} & \textbf{Reference} & \textbf{Keywords} & \textbf{Contribution} \\
+\midrule
+
+End-to-end discovery and exploration systems &
+CHORUS~\cite{10.14778/3659437.3659461} &
+LM, annotation &
+Unifies multiple lake discovery/exploration tasks with a foundation-model pipeline and reports consistent gains over task-specific baselines. \\
+
+~ &
+BLEND~\cite{11112882} &
+plans, ranking &
+Defines a declarative discovery-plan abstraction that compiles to improved execution over heterogeneous signals for unified keyword, join, and union discovery with top-$k$ retrieval. \\
+
+~ &
+LakeCompass~\cite{10.14778/3685800.3685880} &
+indexing, workflows &
+End-to-end lake stack for maintenance + search + analysis workflows, with scalable indexing and practical lake operations. \\
+
+~ &
+METAM~\cite{10184845} &
+utility, ranking &
+Ranks candidate datasets by expected downstream task utility (goal-aware profiling + ranking). \\
+
+~ &
+Selecting Sub-tables~\cite{10184535} &
+sampling, previews &
+Selects compact, informative sub-tables to accelerate inspection when full tables are too large or noisy. \\
+
+~ &
+Ver~\cite{10184768} &
+views, interaction &
+Question-driven view discovery that progressively prunes the space to surface useful derived tables. \\
+
+\midrule
+
+Semantic and learned representations &
+CMDL~\cite{10.14778/3611479.3611533} &
+cross-modal, embeddings &
+Learns joint representations to retrieve across structured tables and unstructured text sources for cross-modal dataset discovery. \\
+
+~ &
+Starmie~\cite{10.14778/3587136.3587146} &
+embeddings, contrastive &
+Pretrains contextualized column representations that capture table context to improve semantic dataset discovery, especially unionable-table retrieval. \\
+
+~ &
+LIFTus~\cite{11113165} &
+fusion, columns &
+Learns multi-aspect column representations and adaptively fuses them to boost union search quality across heterogeneous lakes. \\
+
+~ &
+TabSketchFM~\cite{11113110} &
+sketches, tokens &
+Uses compact column sketches with a pretrained tabular model to scale discovery under token/compute constraints. \\
+
+\midrule
+
+Search for joinable and unionable tables and overlap estimation &
+DeepJoin~\cite{10.14778/3603581.3603587} &
+joinability, retrieval &
+PLM-based joinable-table discovery that embeds columns to rank candidate join partners, improving join discovery over lexical baselines. \\
+
+~ &
+SANTOS~\cite{10.1145/3588689} &
+unionability, semantics &
+Relationship-aware semantic union search using relational/context signals to find unionable tables with compatible meaning. \\
+
+~ &
+Nested/Joined Lake Search~\cite{10.14778/3681954.3682005} &
+nested, joins &
+Extends lake search to nested and join-derived candidates not well-modeled as flat standalone tables. \\
+
+~ &
+Armadillo~\cite{10.1145/3725365} &
+overlap, graphs &
+Learns table embeddings whose similarity approximates overlap ratio for fast scalable overlap estimation. \\
+
+\midrule
+
+Benchmarks, corpora, and surveys for discovery &
+Rottnest~\cite{11113229} &
+indexing, search &
+Scalable lake indexing techniques to support efficient search over large, evolving lakes. \\
+
+~ &
+GitTables~\cite{10.1145/3588710} &
+corpus, benchmark &
+Large public corpus of relational tables mined at scale for reproducible training and evaluation. \\
+
+~ &
+LakeBench~\cite{10.14778/3659437.3659448} &
+benchmark, labels &
+Benchmark suite for joinable and unionable table discovery with ground-truth labeling at lake scale. \\
+
+~ &
+Data Discovery Survey~\cite{10.14778/3750601.3750694} &
+survey, taxonomy &
+Consolidates discovery operations (indexes + systems) and evaluation practice, noting gaps in workloads and cost reporting. \\
+
+~ &
+Table Discovery Survey~\cite{10.1145/3555041.3589409} &
+survey, methods &
+Consolidated overview of table discovery methods and open directions at lake scale. \\
+
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Discovery research addresses the first bottleneck in data lakes: users may know the question they want to answer but still not know which tables are relevant, joinable, or worth inspecting. In practice, analysts usually begin with an information need such as ``find customer-address data'' or ``find tables that can enrich sales records,'' not with a precise table name. Discovery methods therefore combine three jobs: representing what a table contains, retrieving plausible candidates, and helping the user refine or trust the returned results.
+
+The first category in Table~\ref{tab:discovery-methods} captures end-to-end systems such as LakeCompass, BLEND, CHORUS, METAM, Selecting Sub-tables, and Ver. These papers treat discovery as more than ranking. They maintain indexes, generate previews, support interaction, or optimize for downstream utility so that the analyst can decide whether a candidate should move deeper into the pipeline.
+
+A second category replaces surface similarity with richer semantics. CMDL, Starmie, LIFTus, and TabSketchFM learn representations that remain useful when labels are sparse, abbreviated, or inconsistent. DeepJoin, SANTOS, Nested/Joined Lake Search, and Armadillo push that idea toward relationship search by retrieving joinable, unionable, or overlapping tables that later stages can clean, augment, or merge. Read together, these papers show that discovery is increasingly judged by whether it surfaces candidates that are actionable for later preparation and integration, not merely by whether it returns a lexically similar table.
+
+Discovery also depends on shared infrastructure. Rottnest, GitTables, and LakeBench support indexing, large-scale evaluation, and reproducible workloads, while the recent discovery surveys help stabilize terminology and task definitions. That support matters because strong ranking alone is not enough: discovery is only successful when the returned candidates reduce downstream preparation work instead of creating more of it.
+
+\subsection{Preparation and Wrangling}
+Once discovery has narrowed the lake, the survey moves to the middle stage: turning promising candidates into dependable inputs. Table~\ref{tab:prep-methods} connects papers that might otherwise look separate by showing that repair, workflow synthesis, relationalization, and ingestion debugging all answer the same question: how do we make selected data usable enough for later analysis and integration?
+\begin{table*}[!htbp]
+\caption{Preparation \& Wrangling methods mapped to taxonomy.}
+\label{tab:prep-methods}
+\tbl
+\begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
+\toprule
+\textbf{Category} & \textbf{Reference} & \textbf{Keywords} & \textbf{Contribution} \\
+\midrule
+
+Cleaning, repair, and LM-based curation &
+Automatic Data Repair~\cite{10.14778/3675034.3675051} &
+repair, benchmark &
+Benchmarks repair algorithms across datasets/error settings, proposes a repair-search strategy, and derives deployment guidelines. \\
+
+~ &
+DataRinse~\cite{10.14778/3611540.3611628} &
+transforms, mining &
+Recommends semantic data-prep transformations by mining data-preparation code repositories to learn reusable transformation patterns. \\
+
+~ &
+Foundation Models for Data Tasks~\cite{10.14778/3574245.3574258} &
+LM, prompting &
+Casts classical cleaning/integration tasks as prompts and evaluates foundation models, noting strong generalization alongside privacy and domain-specific limitations. \\
+
+~ &
+Lingua Manga~\cite{10.14778/3611540.3611624} &
+LLM, templates &
+Provides a language-model-based curation system with modular templates and orchestration to run end-to-end curation workflows. \\
+
+\midrule
+
+Pipeline synthesis and augmentation for ML analytics &
+CtxPipe~\cite{10.1145/3698831} &
+pipelines, RL &
+Constructs preparation pipelines by conditioning operator selection on dataset/task context and using deep RL to search effective pipelines. \\
+
+~ &
+HAIPipe~\cite{10.1145/3588945} &
+human-AI, reuse &
+Combines human- and machine-generated pipelines via enumeration--sampling (with active learning) and uses RL to search improved AI-pipelines. \\
+
+~ &
+Featpilot~\cite{11113027} &
+features, joins &
+Automatically augments tabular datasets with useful additional features from joinable sources to improve downstream model performance. \\
+
+~ &
+Auto-BI~\cite{10.14778/3603581.3603596} &
+BI, joins &
+Predicts BI schema graphs (joins) via global search, evaluated on large collections of BI models. \\
+
+\midrule
+
+Structuring, relationalization, and ingestion debugging &
+Evaporate~\cite{10.14778/3626292.3626294} &
+views, synthesis &
+Uses language models plus lightweight synthesis and weak supervision to generate structured views over heterogeneous lake inputs. \\
+
+~ &
+Auto-Tables~\cite{10.1145/3665252.3665269} &
+relationalization, schema &
+Relationalizes semi-structured tables without examples by inferring structure/schemas and producing normalized relational output. \\
+
+~ &
+ReCG~\cite{10.14778/3681954.3682019} &
+JSON, clustering &
+Discovers JSON schemas bottom-up by clustering records and generalizing clusters into schema fragments. \\
+
+~ &
+CM Explorer~\cite{10.14778/3611540.3611595} &
+validation, debugging &
+Disentangles correlated violated conditional unit tests using graph-based exploration to localize ingestion errors. \\
+
+~ &
+XDBC~\cite{10.1145/3725294} &
+transfer, tuning &
+Decomposes data transfer into configurable stages and auto-tunes configurations for heterogeneous systems to improve throughput. \\
+
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Preparation and Wrangling changes the data itself. Where discovery returns a ranked list of candidates, preparation produces cleaned tables, derived features, structured views, or rerunnable workflows that can support repeated analysis. This stage matters because many errors that look small in isolation, such as inconsistent date formats or semi-structured headers, become serious blockers once matching or integration begins.
+
+One major strand in Table~\ref{tab:prep-methods} emphasizes repair and transformation reuse. Automatic Data Repair, DataRinse, foundation-model prompting, and Lingua Manga all try to reduce repetitive manual cleaning, but they differ in what they optimize: safer repairs, reusable transforms, broad prompting coverage, or orchestrated curation workflows. Their shared promise is automation; their shared risk is that plausible edits can still be hard to validate, explain, or rerun consistently.
+
+Another strand treats preparation as workflow construction. CtxPipe, HAIPipe, Featpilot, and Auto-BI search for pipelines, join paths, or augmentations that improve recurring analytical tasks. Evaporate, Auto-Tables, ReCG, CM Explorer, and XDBC handle structurally messy inputs by relationalizing semi-structured data, debugging ingestion failures, or tuning movement across systems. Together these papers show that preparation quality depends on downstream usefulness rather than local cleanliness alone: a transformation is valuable only if it leaves the data easier to analyze and easier to integrate.
+
+Preparation therefore exposes a tension between quick automation and reusable process design. Language-model-based curation can shorten time to first result, but repeated use requires provenance, validation, and rerunnable workflows. Pipeline-construction systems are strongest when the same analytical pattern recurs across datasets, while relationalization systems are strongest when the lake still hides the structure that later matching depends on.
+
+\subsection{Integration and Matching}
+The final stage of the story is integration: the point where cleaned candidates must become one coherent analytical output. Table~\ref{tab:integration-methods} organizes that stage by grouping papers into schema/table integration, entity-resolution workflows, evaluation-oriented matching work, and reusable integration signals. Read the table as a map of how the literature turns aligned fragments into a merged dataset rather than as a detached inventory.
+\begin{table*}[!htbp]
+\caption{Integration \& Matching methods mapped to taxonomy.}
+\label{tab:integration-methods}
+\tbl
+\begin{tabularx}{\textwidth}{@{}p{24mm}p{28mm}p{18mm}Y@{}}
+\toprule
+\textbf{Category} & \textbf{Reference} & \textbf{Keywords} & \textbf{Contribution} \\
+\midrule
+
+Schema and table matching and multi-table integration &
+DIALITE~\cite{10.1145/3555041.3589732} &
+open-data, alignment &
+End-to-end pipeline that discovers relevant open tables and integrates them by aligning schemas/values (KG+LLM-assisted). \\
+
+~ &
+ALITE~\cite{10.14778/3574245.3574274} &
+integration, disjunction &
+Adaptive-learning approach for integrating discovered lake tables under full-disjunction semantics at scale. \\
+
+~ &
+Magneto~\cite{10.14778/3742728.3742757} &
+matching, hybrid-LM &
+Hybrid schema-matching system: a small LM proposes candidate matches and a large LM verifies/repairs ambiguous cases. \\
+
+~ &
+PLM Schema Matching~\cite{10184612} &
+matching, embeddings &
+Adapts pre-trained LMs to encode attribute/column semantics for schema matching across heterogeneous schemas. \\
+
+\midrule
+
+Entity matching and ER workflows &
+FlexER~\cite{10.1145/3588722} &
+ER, intents &
+Models ER with multiple downstream intents as multi-label classification and uses a multiplex-graph GNN for intent-aware matching. \\
+
+~ &
+Progressive EM~\cite{10.1145/3709715} &
+progressive, scheduling &
+Characterizes the design space of progressive EM and benchmarks progressive strategies including NN/PLM-based variants. \\
+
+~ &
+Unicorn~\cite{10.1145/3588938} &
+multitask, matching &
+Unified multi-task model supporting several DI matching tasks via shared encoders and task-specific heads. \\
+
+~ &
+WeakSup GT Inference~\cite{10.1145/3588712} &
+weak-supervision, labels &
+Infers latent ground truth from weak supervision sources by learning a label model that combines noisy signals for EM. \\
+
+~ &
+Battleship~\cite{10.1145/3626711} &
+active-learning, low-resource &
+Active-learning approach for low-resource EM that selects informative pairs via a Battleship-style strategy. \\
+
+\midrule
+
+Evaluation, fairness, and feature engineering for matching &
+Fairness Lens~\cite{10.14778/3611479.3611525} &
+fairness, bias &
+Audits EM through fairness by constructing social datasets and analyzing disparate error rates under imbalance. \\
+
+~ &
+Filtering Benchmarks~\cite{10184692} &
+blocking, benchmark &
+Benchmarks combinations of filtering and scheduling strategies for (progressive) ER across datasets. \\
+
+~ &
+DescSim Rules~\cite{11112979} &
+rules, features &
+Introduces description-similarity rules to engineer informative, interpretable EM features from attribute descriptions. \\
+
+~ &
+Relation Enrichment~\cite{10.14778/3681954.3681987} &
+enrichment, attributes &
+Boosts ER quality by enriching related tuples with additional attributes from auxiliary sources. \\
+
+\midrule
+
+Integration signals and augmentation &
+Causal DI~\cite{10.14778/3603581.3603602} &
+causal, confounders &
+Defines causal data integration (CDI): augments datasets with missing confounders from external sources and infers a causal graph. \\
+
+~ &
+Entity Augmentation~\cite{10.14778/3611479.3611535} &
+augmentation, querying &
+Studies how to augment entities by selectively querying external sources with cost-aware querying strategies. \\
+
+~ &
+Sudowoodo~\cite{10184556} &
+contrastive, representations &
+Self-supervised contrastive approach that learns similarity-aware representations from unlabeled data and transfers to multiple DI tasks. \\
+
+~ &
+SIND~\cite{10.1145/3588929} &
+dependencies, profiling &
+Discovers similarity inclusion dependencies (approximate containment/foreign-key-like signals) to reveal join/integration opportunities. \\
+
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Integration and Matching is the stage where cleaned candidates must become one coherent analytical output. In data lakes, that step is difficult because metadata is often weak, tables overlap only partially, and two analysts may want different definitions of what counts as the ``same'' entity or the ``same'' schema. Table~\ref{tab:integration-methods} therefore groups the literature by the kind of evidence it uses to align fragments before merging them.
+
+DIALITE, ALITE, Magneto, and PLM Schema Matching show that integration quality depends on both alignment quality and merge semantics. Some systems focus on schema/table alignment across open or heterogeneous sources, while others use stronger language-model or embedding signals to recover correspondences that simple name matching would miss. The important point is that matching does not end once a pair of columns is linked; the system must still decide how partial facts are combined and what structure the merged result should preserve.
+
+Entity-resolution work such as FlexER, Progressive EM, Unicorn, WeakSup GT Inference, and Battleship treats matching as intent-aware, budgeted, or low-supervision workflow design. A broader set of papers contributes reusable signals and evaluation tools, including fairness auditing, blocking benchmarks, description-based features, relation enrichment, external augmentation, self-supervised representations, causal augmentation, and similarity inclusion dependencies. Read together, these papers make integration look less like a single classifier and more like a controlled evidence-aggregation process.
+
+Integration is also the stage where correctness becomes most task dependent. A merged result can be technically well aligned but still analytically wrong if it collapses partial evidence, applies the wrong entity granularity, or hides ambiguity that a user would want to inspect. This is why recent matching work increasingly studies intent, fairness, supervision cost, and reusable evidence rather than only reporting final accuracy.
+
+\section{Comparison and Discussion}
+By this point, the earlier tables have introduced the major method families phase by phase. Table~\ref{tab:comparison} brings them back together and asks the higher-level survey question: under what scenarios does each family help most, and where do its strengths stop being enough?
+\begin{table*}[t]
+\caption{Cross-phase comparison of representative method families.}
+\label{tab:comparison}
+\centering
+\tbl
+\begin{tabularx}{\textwidth}{@{}p{28mm}p{34mm}Y Y Y@{}}
+\toprule
+\textbf{Family} & \textbf{Representative works} & \textbf{Works well when} & \textbf{Main strengths} & \textbf{Main limitations} \\
+\midrule
+End-to-end discovery systems &
+LakeCompass~\cite{10.14778/3685800.3685880}, BLEND~\cite{11112882}, CHORUS~\cite{10.14778/3659437.3659461} &
+Users need broad search over large lakes &
+Unified search and exploration stack &
+Maintenance cost and intent drift \\
+\addlinespace[0.25em]
+Learned discovery and relationship search &
+Starmie~\cite{10.14778/3587136.3587146}, DeepJoin~\cite{10.14778/3603581.3603587}, SANTOS~\cite{10.1145/3588689} &
+Semantic overlap matters more than exact names &
+Robust to weak metadata &
+Training cost and lower interpretability \\
+\addlinespace[0.25em]
+Cleaning and workflow automation &
+Automatic Data Repair~\cite{10.14778/3675034.3675051}, CtxPipe~\cite{10.1145/3698831}, Lingua Manga~\cite{10.14778/3611540.3611624} &
+Preparation tasks repeat across datasets &
+Reusable workflows and less manual work &
+Hard validation and unsafe edits \\
+\addlinespace[0.25em]
+Structuring and relationalization &
+Evaporate~\cite{10.14778/3626292.3626294}, Auto-Tables~\cite{10.1145/3665252.3665269}, ReCG~\cite{10.14778/3681954.3682019} &
+Inputs are semi-structured or irregular &
+Makes messy data queryable &
+Brittle multi-step transforms \\
+\addlinespace[0.25em]
+Integration and entity-resolution workflows &
+DIALITE~\cite{10.1145/3555041.3589732}, Magneto~\cite{10.14778/3742728.3742757}, FlexER~\cite{10.1145/3588722}, Unicorn~\cite{10.1145/3588938} &
+Sources overlap under limited labels or policy constraints &
+Richer outputs and intent awareness &
+Merge semantics, fairness, and privacy \\
+\bottomrule
+\end{tabularx}
+\end{table*}
+
+Table~\ref{tab:comparison} shows that the major method families solve different local problems and should be compared by scenario rather than by one universal metric. Discovery families help when the lake is large and weakly documented, preparation families matter when cleaning logic or workflow structure must be reused, and integration families matter when partial overlap, ambiguous matches, or policy constraints dominate. The most useful comparisons are cross-phase ones: a method is stronger when it improves the next stage rather than only its own local score.
+
+This comparison also clarifies why older design choices remain relevant. Metadata-driven discovery is still attractive when lakes are stable and descriptive, rule-based repair remains useful when strong domain constraints are available, and explicit merge semantics remain valuable when partial facts must be preserved. Learned methods become more attractive when labels are sparse, schemas vary, or semantics drift across sources, but they usually demand more validation, more compute, and more user trust.
+
+Within discovery, the main contrast is between operational breadth and semantic depth. Systems centered on indexes, plans, and previews are often easier to monitor and maintain, and they work well when table names, keys, or metadata remain reasonably informative over time. Learned retrieval becomes more valuable when those signals are weak or inconsistent, because column content and context carry more meaning than names alone. The trade-off is that explanations become harder. A user may receive a strong candidate without understanding which structural or semantic cues made it appear reliable, which can slow trust and downstream adoption.
+
+Preparation methods divide more sharply by intended use. Repair and transformation systems are most effective when analysts repeatedly confront noisy values, format inconsistencies, or missing fields. Pipeline-synthesis systems are better suited to repeated machine-learning or BI tasks where reusable operator sequences matter as much as the final table. Structuring and relationalization systems solve a different problem again: they create the tabular form that later discovery and matching methods assume already exists. In practice, one family is not ``better'' than another unless the analyst's bottleneck is clear, because each family removes a different source of difficulty.
+
+Integration methods also differ in where their difficulty lies. Some problems are dominated by schema heterogeneity and benefit from stronger column representations or staged matching. Others are dominated by limited labels, so weak supervision, active learning, or reusable similarity signals become more useful than a slightly stronger final classifier. In settings with partial overlap, open data, or enterprise policy constraints, explicit merge semantics may matter more than raw matching accuracy. A system that exposes how partial facts are preserved can be more valuable than one that reports a higher score but hides important modeling assumptions.
+
+These contrasts matter because the pipeline fails at stage boundaries. A discovery method can return a joinable table whose keys require too much repair to be practical. A preparation method can normalize away the rare values that later matching would need. An integration method can merge sources under one definition of sameness even though the analyst needs another. This is why human oversight remains essential even in highly automated pipelines: not because automation is weak, but because many errors are failures of fit between stages rather than failures inside one stage alone.
+
+\section{Open Challenges and Future Directions}
+\paragraph{End-to-End Evaluation.}
+Most papers still report metrics for a single phase even though practical success depends on the whole pipeline. A strong retrieval model can surface tables that are difficult to clean or merge, and a repair method can improve local consistency while hurting downstream matching. A major need is benchmark design that records stage-level metrics together with at least one end-to-end analytical outcome. Without that broader view, phase-specific scores can make methods look more comparable than they really are.
+
+\paragraph{Intent, Interaction, and Safe Automation.}
+Analytical intent is often ambiguous in data lakes, so future systems should support interactive refinement and make uncertainty visible instead of hiding it. This matters even more as language-model-based discovery, preparation, and integration become common. The open problem is not only how to automate more, but how to automate safely through validation hooks, rollback mechanisms, constraint checks, and confidence-aware execution. Analysts should be able to inspect competing joins, repairs, and match definitions before those choices become part of a final dataset.
+
+\paragraph{Scale, Maintenance, and Governance.}
+At realistic lake scale, infrastructure costs matter as much as model quality. Discovery systems must maintain indexes and embeddings, preparation systems may execute many candidate workflows, and integration systems often spend most of their time in blocking, filtering, or label acquisition. Future work should therefore report runtime-quality trade-offs explicitly and treat governance, fairness, and privacy rules as planning constraints rather than as after-the-fact filters. Incremental maintenance is especially important when lakes evolve continuously instead of by occasional rebuilds.
+
+\paragraph{Evolving Lakes and Shared Resources.}
+Many systems still assume that the analytical challenge begins only after data has already been made tabular, but real lakes evolve in format, nesting depth, and storage location over time. Future work should connect discovery, preparation, and integration more directly for semi-structured and changing data. It also needs shared test collections that cover the full pipeline, boundary failures between stages, and maintenance cost under evolving-lake conditions. Those boundary failures are often where practical workflows break: discovery may return structurally incompatible tables, preparation may erase useful matching signals, and integration may rely on evidence that earlier stages never exposed.
+
+\section{Conclusion}
+This literature review examined how recent data-lake research moves from finding relevant data to producing analytics-ready outputs. The literature now supports a clear three-phase view: discovery narrows the search space, preparation stabilizes candidate data, and integration aligns and merges the final sources. The strongest recent trend is broader automation, but the central open problems remain safety, intent, governance, and evaluation across the whole pipeline rather than within isolated stages. For practice, the clearest lesson is that data-lake systems should be judged by how reliably they turn retrieved candidates into usable analytical datasets rather than by phase-specific scores alone.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{ref}
+
+\end{document}
