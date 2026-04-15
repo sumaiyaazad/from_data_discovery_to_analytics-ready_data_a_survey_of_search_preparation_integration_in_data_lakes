@@ -109,7 +109,7 @@ Table~\ref{tab:search-strings} records the four search-term groups used to keep 
 S1 & \texttt{discovery}, \texttt{search}, \texttt{table search}, \texttt{dataset retrieval}, \texttt{exploration} \\
 S2 & \texttt{joinable}, \texttt{unionable}, \texttt{overlap}, \texttt{join discovery}, \texttt{union discovery} \\
 S3 & \texttt{wrangling}, \texttt{preparation}, \texttt{cleaning}, \texttt{transform}, \texttt{pipeline synthesis} \\
-S4 & \texttt{schema matching}, \texttt{entity resolution}, \texttt{record linkage}, \texttt{data integration}, \texttt{LLM} \\
+S4 & \texttt{schema matching}, \texttt{entity resolution}, \texttt{record linkage}, \texttt{data integration}, \texttt{large language model} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -191,8 +191,8 @@ With that scope fixed, the rest of this section is structured around three stage
 \draw[conn, draw=prepC] (prepStem) -- ($(prepB3)+(0,-1.4mm)$);
 
 \foreach \p/\txt in {
-  prepB1/{Cleaning, repair, and LM-based curation},
-  prepB2/{Pipeline synthesis and augmentation for ML analytics},
+  prepB1/{Cleaning, repair, and language-model-based curation},
+  prepB2/{Pipeline synthesis and augmentation for machine-learning analytics},
   prepB3/{Structuring, relationalization, and ingestion debugging}
 }{
   \fill[prepC] (\p) rectangle ++(\bs,\bs);
@@ -212,7 +212,7 @@ With that scope fixed, the rest of this section is structured around three stage
   {Schema and table matching and multi-table integration};
 
 \foreach \p/\txt in {
-  inteB2/{Entity matching and ER workflows},
+  inteB2/{Entity matching and entity-resolution workflows},
   inteB3/{Evaluation, fairness, and feature engineering for matching},
   inteB4/{Integration signals and augmentation}
 }{
@@ -267,7 +267,7 @@ Discovery is the opening stage of the story: before any repair or integration ca
 
 End-to-end discovery and exploration systems &
 CHORUS~\cite{10.14778/3659437.3659461} &
-LM, annotation &
+language models, annotation &
 Unifies multiple lake discovery/exploration tasks with a foundation-model pipeline and reports consistent gains over task-specific baselines. \\
 
 ~ &
@@ -322,7 +322,7 @@ Uses compact column sketches with a pretrained tabular model to scale discovery 
 Search for joinable and unionable tables and overlap estimation &
 DeepJoin~\cite{10.14778/3603581.3603587} &
 joinability, retrieval &
-PLM-based joinable-table discovery that embeds columns to rank candidate join partners, improving join discovery over lexical baselines. \\
+Pre-trained-language-model-based joinable-table discovery that embeds columns to rank candidate join partners, improving join discovery over lexical baselines. \\
 
 ~ &
 SANTOS~\cite{10.1145/3588689} &
@@ -389,7 +389,7 @@ Once discovery has narrowed the lake, the survey moves to the middle stage: turn
 \textbf{Category} & \textbf{Reference} & \textbf{Keywords} & \textbf{Contribution} \\
 \midrule
 
-Cleaning, repair, and LM-based curation &
+Cleaning, repair, and language-model-based curation &
 Automatic Data Repair~\cite{10.14778/3675034.3675051} &
 repair, benchmark &
 Benchmarks repair algorithms across datasets/error settings, proposes a repair-search strategy, and derives deployment guidelines. \\
@@ -401,25 +401,25 @@ Recommends semantic data-prep transformations by mining data-preparation code re
 
 ~ &
 Foundation Models for Data Tasks~\cite{10.14778/3574245.3574258} &
-LM, prompting &
+language models, prompting &
 Casts classical cleaning/integration tasks as prompts and evaluates foundation models, noting strong generalization alongside privacy and domain-specific limitations. \\
 
 ~ &
 Lingua Manga~\cite{10.14778/3611540.3611624} &
-LLM, templates &
+large language models, templates &
 Provides a language-model-based curation system with modular templates and orchestration to run end-to-end curation workflows. \\
 
 \midrule
 
-Pipeline synthesis and augmentation for ML analytics &
+Pipeline synthesis and augmentation for machine-learning analytics &
 CtxPipe~\cite{10.1145/3698831} &
-pipelines, RL &
-Constructs preparation pipelines by conditioning operator selection on dataset/task context and using deep RL to search effective pipelines. \\
+pipelines, reinforcement learning &
+Constructs preparation pipelines by conditioning operator selection on dataset/task context and using deep reinforcement learning to search effective pipelines. \\
 
 ~ &
 HAIPipe~\cite{10.1145/3588945} &
-human-AI, reuse &
-Combines human- and machine-generated pipelines via enumeration--sampling (with active learning) and uses RL to search improved AI-pipelines. \\
+human-machine collaboration, reuse &
+Combines human- and machine-generated pipelines via enumeration--sampling (with active learning) and uses reinforcement learning to search improved machine-generated pipelines. \\
 
 ~ &
 Featpilot~\cite{11113027} &
@@ -427,9 +427,9 @@ features, joins &
 Automatically augments tabular datasets with useful additional features from joinable sources to improve downstream model performance. \\
 
 ~ &
-Auto-BI~\cite{10.14778/3603581.3603596} &
-BI, joins &
-Predicts BI schema graphs (joins) via global search, evaluated on large collections of BI models. \\
+Automatically Build Business-Intelligence Models (Auto-BI)~\cite{10.14778/3603581.3603596} &
+business intelligence, joins &
+Predicts business-intelligence schema graphs (joins) via global search, evaluated on large collections of business-intelligence models. \\
 
 \midrule
 
@@ -445,8 +445,8 @@ Relationalizes semi-structured tables without examples by inferring structure/sc
 
 ~ &
 ReCG~\cite{10.14778/3681954.3682019} &
-JSON, clustering &
-Discovers JSON schemas bottom-up by clustering records and generalizing clusters into schema fragments. \\
+JavaScript Object Notation, clustering &
+Discovers JavaScript Object Notation (JSON) schemas bottom-up by clustering records and generalizing clusters into schema fragments. \\
 
 ~ &
 CM Explorer~\cite{10.14778/3611540.3611595} &
@@ -454,7 +454,7 @@ validation, debugging &
 Disentangles correlated violated conditional unit tests using graph-based exploration to localize ingestion errors. \\
 
 ~ &
-XDBC~\cite{10.1145/3725294} &
+Fast and Scalable Data Transfer Across Data Systems~\cite{10.1145/3725294} &
 transfer, tuning &
 Decomposes data transfer into configurable stages and auto-tunes configurations for heterogeneous systems to improve throughput. \\
 
@@ -466,7 +466,7 @@ Preparation and Wrangling changes the data itself. Where discovery returns a ran
 
 One major strand in Table~\ref{tab:prep-methods} emphasizes repair and transformation reuse. Automatic Data Repair, DataRinse, foundation-model prompting, and Lingua Manga all try to reduce repetitive manual cleaning, but they differ in what they optimize: safer repairs, reusable transforms, broad prompting coverage, or orchestrated curation workflows. Their shared promise is automation; their shared risk is that plausible edits can still be hard to validate, explain, or rerun consistently.
 
-Another strand treats preparation as workflow construction. CtxPipe, HAIPipe, Featpilot, and Auto-BI search for pipelines, join paths, or augmentations that improve recurring analytical tasks. Evaporate, Auto-Tables, ReCG, CM Explorer, and XDBC handle structurally messy inputs by relationalizing semi-structured data, debugging ingestion failures, or tuning movement across systems. Together these papers show that preparation quality depends on downstream usefulness rather than local cleanliness alone: a transformation is valuable only if it leaves the data easier to analyze and easier to integrate.
+Another strand treats preparation as workflow construction. CtxPipe, HAIPipe, Featpilot, and Automatically Build Business-Intelligence Models (Auto-BI) search for pipelines, join paths, or augmentations that improve recurring analytical tasks. Evaporate, Auto-Tables, ReCG, CM Explorer, and Fast and Scalable Data Transfer Across Data Systems handle structurally messy inputs by relationalizing semi-structured data, debugging ingestion failures, or tuning movement across systems. Together these papers show that preparation quality depends on downstream usefulness rather than local cleanliness alone: a transformation is valuable only if it leaves the data easier to analyze and easier to integrate.
 
 Preparation therefore exposes a tension between quick automation and reusable process design. Language-model-based curation can shorten time to first result, but repeated use requires provenance, validation, and rerunnable workflows. Pipeline-construction systems are strongest when the same analytical pattern recurs across datasets, while relationalization systems are strongest when the lake still hides the structure that later matching depends on.
 
@@ -484,7 +484,7 @@ The final stage of the story is integration: the point where cleaned candidates 
 Schema and table matching and multi-table integration &
 DIALITE~\cite{10.1145/3555041.3589732} &
 open-data, alignment &
-End-to-end pipeline that discovers relevant open tables and integrates them by aligning schemas/values (KG+LLM-assisted). \\
+End-to-end pipeline that discovers relevant open tables and integrates them by aligning schemas and values with knowledge-graph and large-language-model assistance. \\
 
 ~ &
 ALITE~\cite{10.14778/3574245.3574274} &
@@ -493,69 +493,69 @@ Adaptive-learning approach for integrating discovered lake tables under full-dis
 
 ~ &
 Magneto~\cite{10.14778/3742728.3742757} &
-matching, hybrid-LM &
-Hybrid schema-matching system: a small LM proposes candidate matches and a large LM verifies/repairs ambiguous cases. \\
+matching, hybrid language models &
+Hybrid schema-matching system: a smaller language model proposes candidate matches and a larger language model verifies or repairs ambiguous cases. \\
 
 ~ &
-PLM Schema Matching~\cite{10184612} &
+Pre-trained Language Model Schema Matching~\cite{10184612} &
 matching, embeddings &
-Adapts pre-trained LMs to encode attribute/column semantics for schema matching across heterogeneous schemas. \\
+Adapts pre-trained language models to encode attribute and column semantics for schema matching across heterogeneous schemas. \\
 
 \midrule
 
-Entity matching and ER workflows &
-FlexER~\cite{10.1145/3588722} &
-ER, intents &
-Models ER with multiple downstream intents as multi-label classification and uses a multiplex-graph GNN for intent-aware matching. \\
+Entity matching and entity-resolution workflows &
+Flexible Entity Resolution (FlexER)~\cite{10.1145/3588722} &
+entity resolution, intents &
+Models entity resolution with multiple downstream intents as multi-label classification and uses a multiplex-graph graph neural network for intent-aware matching. \\
 
 ~ &
-Progressive EM~\cite{10.1145/3709715} &
+Progressive Entity Matching~\cite{10.1145/3709715} &
 progressive, scheduling &
-Characterizes the design space of progressive EM and benchmarks progressive strategies including NN/PLM-based variants. \\
+Characterizes the design space of progressive entity matching and benchmarks progressive strategies including neural-network- and pre-trained-language-model-based variants. \\
 
 ~ &
 Unicorn~\cite{10.1145/3588938} &
 multitask, matching &
-Unified multi-task model supporting several DI matching tasks via shared encoders and task-specific heads. \\
+Unified multi-task model supporting several data-integration matching tasks via shared encoders and task-specific heads. \\
 
 ~ &
 WeakSup GT Inference~\cite{10.1145/3588712} &
 weak-supervision, labels &
-Infers latent ground truth from weak supervision sources by learning a label model that combines noisy signals for EM. \\
+Infers latent ground truth from weak supervision sources by learning a label model that combines noisy signals for entity matching. \\
 
 ~ &
 Battleship~\cite{10.1145/3626711} &
 active-learning, low-resource &
-Active-learning approach for low-resource EM that selects informative pairs via a Battleship-style strategy. \\
+Active-learning approach for low-resource entity matching that selects informative pairs via a Battleship-style strategy. \\
 
 \midrule
 
 Evaluation, fairness, and feature engineering for matching &
 Fairness Lens~\cite{10.14778/3611479.3611525} &
 fairness, bias &
-Audits EM through fairness by constructing social datasets and analyzing disparate error rates under imbalance. \\
+Audits entity matching through fairness by constructing social datasets and analyzing disparate error rates under imbalance. \\
 
 ~ &
 Filtering Benchmarks~\cite{10184692} &
 blocking, benchmark &
-Benchmarks combinations of filtering and scheduling strategies for (progressive) ER across datasets. \\
+Benchmarks combinations of filtering and scheduling strategies for progressive entity resolution across datasets. \\
 
 ~ &
 DescSim Rules~\cite{11112979} &
 rules, features &
-Introduces description-similarity rules to engineer informative, interpretable EM features from attribute descriptions. \\
+Introduces description-similarity rules to engineer informative, interpretable entity-matching features from attribute descriptions. \\
 
 ~ &
 Relation Enrichment~\cite{10.14778/3681954.3681987} &
 enrichment, attributes &
-Boosts ER quality by enriching related tuples with additional attributes from auxiliary sources. \\
+Boosts entity-resolution quality by enriching related tuples with additional attributes from auxiliary sources. \\
 
 \midrule
 
 Integration signals and augmentation &
-Causal DI~\cite{10.14778/3603581.3603602} &
+Causal Data Integration~\cite{10.14778/3603581.3603602} &
 causal, confounders &
-Defines causal data integration (CDI): augments datasets with missing confounders from external sources and infers a causal graph. \\
+Defines causal data integration by augmenting datasets with missing confounders from external sources and inferring a causal graph. \\
 
 ~ &
 Entity Augmentation~\cite{10.14778/3611479.3611535} &
@@ -565,12 +565,12 @@ Studies how to augment entities by selectively querying external sources with co
 ~ &
 Sudowoodo~\cite{10184556} &
 contrastive, representations &
-Self-supervised contrastive approach that learns similarity-aware representations from unlabeled data and transfers to multiple DI tasks. \\
+Self-supervised contrastive approach that learns similarity-aware representations from unlabeled data and transfers to multiple data-integration tasks. \\
 
 ~ &
-SIND~\cite{10.1145/3588929} &
+Similarity Inclusion Dependencies~\cite{10.1145/3588929} &
 dependencies, profiling &
-Discovers similarity inclusion dependencies (approximate containment/foreign-key-like signals) to reveal join/integration opportunities. \\
+Discovers similarity inclusion dependencies, which act as approximate containment or foreign-key-like signals to reveal join and integration opportunities. \\
 
 \bottomrule
 \end{tabularx}
@@ -578,9 +578,9 @@ Discovers similarity inclusion dependencies (approximate containment/foreign-key
 
 Integration and Matching is the stage where cleaned candidates must become one coherent analytical output. In data lakes, that step is difficult because metadata is often weak, tables overlap only partially, and two analysts may want different definitions of what counts as the ``same'' entity or the ``same'' schema. Table~\ref{tab:integration-methods} therefore groups the literature by the kind of evidence it uses to align fragments before merging them.
 
-DIALITE, ALITE, Magneto, and the pre-trained language model (PLM) method PLM Schema Matching show that integration quality depends on both alignment quality and merge semantics. Some systems focus on schema/table alignment across open or heterogeneous sources, while others use stronger language-model or embedding signals to recover correspondences that simple name matching would miss. The important point is that matching does not end once a pair of columns is linked; the system must still decide how partial facts are combined and what structure the merged result should preserve.
+DIALITE, ALITE, Magneto, and the Pre-trained Language Model Schema Matching method show that integration quality depends on both alignment quality and merge semantics. Some systems focus on schema/table alignment across open or heterogeneous sources, while others use stronger language-model or embedding signals to recover correspondences that simple name matching would miss. The important point is that matching does not end once a pair of columns is linked; the system must still decide how partial facts are combined and what structure the merged result should preserve.
 
-Entity-resolution work such as FlexER, Progressive EM, Unicorn, WeakSup GT Inference, and Battleship treats matching as intent-aware, budgeted, or low-supervision workflow design. A broader set of papers contributes reusable signals and evaluation tools, including fairness auditing, blocking benchmarks, description-based features, relation enrichment, external augmentation, self-supervised representations, causal augmentation, and similarity inclusion dependencies. Read together, these papers make integration look less like a single classifier and more like a controlled evidence-aggregation process.
+Entity-resolution work such as Flexible Entity Resolution (FlexER), Progressive Entity Matching, Unicorn, WeakSup GT Inference, and Battleship treats matching as intent-aware, budgeted, or low-supervision workflow design. A broader set of papers contributes reusable signals and evaluation tools, including fairness auditing, blocking benchmarks, description-based features, relation enrichment, external augmentation, self-supervised representations, causal augmentation, and similarity inclusion dependencies. Read together, these papers make integration look less like a single classifier and more like a controlled evidence-aggregation process.
 
 Integration is also the stage where correctness becomes most task dependent. A merged result can be technically well aligned but still analytically wrong if it collapses partial evidence, applies the wrong entity granularity, or hides ambiguity that a user would want to inspect. This is why recent matching work increasingly studies intent, fairness, supervision cost, and reusable evidence rather than only reporting final accuracy.
 
@@ -620,7 +620,7 @@ Makes messy data queryable &
 Brittle multi-step transforms \\
 \addlinespace[0.25em]
 Integration and entity-resolution workflows &
-DIALITE~\cite{10.1145/3555041.3589732}, Magneto~\cite{10.14778/3742728.3742757}, FlexER~\cite{10.1145/3588722}, Unicorn~\cite{10.1145/3588938} &
+DIALITE~\cite{10.1145/3555041.3589732}, Magneto~\cite{10.14778/3742728.3742757}, Flexible Entity Resolution (FlexER)~\cite{10.1145/3588722}, Unicorn~\cite{10.1145/3588938} &
 Sources overlap under limited labels or policy constraints &
 Richer outputs and intent awareness &
 Merge semantics, fairness, and privacy \\
@@ -634,7 +634,7 @@ This comparison also clarifies why older design choices remain relevant. Metadat
 
 Within discovery, the main contrast is between operational breadth and semantic depth. Systems centered on indexes, plans, and previews are often easier to monitor and maintain, and they work well when table names, keys, or metadata remain reasonably informative over time. Learned retrieval becomes more valuable when those signals are weak or inconsistent, because column content and context carry more meaning than names alone. The trade-off is that explanations become harder. A user may receive a strong candidate without understanding which structural or semantic cues made it appear reliable, which can slow trust and downstream adoption.
 
-Preparation methods divide more sharply by intended use. Repair and transformation systems are most effective when analysts repeatedly confront noisy values, format inconsistencies, or missing fields. Pipeline-synthesis systems are better suited to repeated machine-learning or BI tasks where reusable operator sequences matter as much as the final table. Structuring and relationalization systems solve a different problem again: they create the tabular form that later discovery and matching methods assume already exists. In practice, one family is not ``better'' than another unless the analyst's bottleneck is clear, because each family removes a different source of difficulty.
+Preparation methods divide more sharply by intended use. Repair and transformation systems are most effective when analysts repeatedly confront noisy values, format inconsistencies, or missing fields. Pipeline-synthesis systems are better suited to repeated machine-learning or business-intelligence tasks where reusable operator sequences matter as much as the final table. Structuring and relationalization systems solve a different problem again: they create the tabular form that later discovery and matching methods assume already exists. In practice, one family is not ``better'' than another unless the analyst's bottleneck is clear, because each family removes a different source of difficulty.
 
 Integration methods also differ in where their difficulty lies. Some problems are dominated by schema heterogeneity and benefit from stronger column representations or staged matching. Others are dominated by limited labels, so weak supervision, active learning, or reusable similarity signals become more useful than a slightly stronger final classifier. In settings with partial overlap, open data, or enterprise policy constraints, explicit merge semantics may matter more than raw matching accuracy. A system that exposes how partial facts are preserved can be more valuable than one that reports a higher score but hides important modeling assumptions.
 
