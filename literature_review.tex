@@ -64,7 +64,7 @@ Data lakes store heterogeneous tables, semi-structured files, logs, spreadsheets
 
 This is also a human-centered systems problem. Analysts still interpret weak metadata, validate repairs, inspect suggested joins, and decide whether automated outputs are trustworthy, as reflected across recent discovery and integration systems~\cite{10.14778/3659437.3659461,10.1145/3555041.3589732,10.14778/3742728.3742757}. Useful systems therefore need more than accuracy; they must reduce manual effort while preserving control when the lake is messy, incomplete, or policy constrained.
 
-Recent database work from 2022 to 2025 has shifted from metadata-driven retrieval and rule-based cleaning toward semantic retrieval, pipeline synthesis, and language-model (LM)-assisted integration~\cite{10.14778/3587136.3587146,10.14778/3603581.3603587,10.1145/3698831,10.14778/3742728.3742757}. In this survey, I view the literature as a pipeline from discovery to analytics-ready data in lake or closely related lakehouse settings.
+Recent database work from 2022 to 2025 has shifted from metadata-driven retrieval and rule-based cleaning toward semantic retrieval, pipeline synthesis, and language-model (LM)-assisted integration~\cite{10.14778/3587136.3587146,10.14778/3603581.3603587,10.1145/3698831,10.14778/3742728.3742757}. This survey views the literature as a pipeline from discovery to analytics-ready data in lake or closely related lakehouse settings.
 
 Across that pipeline, recurring evaluation criteria include retrieval quality, downstream utility, matching accuracy, scalability, runtime cost, robustness to weak metadata, and the amount of human supervision required. These criteria point to common challenges: large and evolving lakes, ambiguous user intent, unsafe automation, and limited end-to-end evaluation even when individual stages perform well.
 
@@ -90,7 +90,7 @@ Although each phase uses different metrics, several criteria appear throughout t
 \subsection{Basis of Categorization}
 This review groups recent work by \emph{primary output}. A method belongs to Discovery and Search if it mainly returns ranked candidates for exploration, to Preparation and Wrangling if it mainly returns cleaned tables or reusable workflows, and to Integration and Matching if it mainly returns correspondences, entity matches, or merged tables. This rule avoids double counting when one system touches more than one stage.
 
-Using that rule, the literature forms three main classes with recurring subcategories. Discovery includes end-to-end search systems, semantic retrieval, join and union search, and benchmark-oriented work. Preparation includes cleaning and repair, pipeline synthesis, and structuring messy inputs. Integration includes schema alignment, ER workflows, fairness-aware evaluation, and reusable integration signals.
+Using that rule, the literature forms three main classes with recurring subcategories. Discovery includes end-to-end search systems, semantic retrieval, join and union search, and benchmark-oriented work. Preparation includes cleaning and repair, pipeline synthesis, and structuring messy inputs. Integration includes schema alignment, EM and ER workflows, fairness-aware evaluation, and reusable integration signals.
 
 \subsection{Scope of the Reviewed Literature}
 The reviewed corpus contains 49 papers published between 2022 and 2025 in the SIGMOD International Conference on Management of Data (SIGMOD), the Proceedings of the VLDB Endowment (PVLDB), and the International Conference on Data Engineering (ICDE). Forty-seven are method papers that fit one of the three pipeline phases, and two are survey-style discovery references used to frame terminology and evaluation practice. Papers were selected by keyword groups in Table~\ref{tab:search-strings}, filtered to lake/lakehouse-relevant tasks, and categorized by the dominant output reported in each paper. Each included method is assigned to exactly one phase by its primary output. This compresses real overlap, but it keeps the taxonomy consistent and makes phase-level comparison easier to interpret.
@@ -109,7 +109,7 @@ Table~\ref{tab:search-strings} records the four search-term groups used to keep 
 S1 & \texttt{discovery}, \texttt{search}, \texttt{table search}, \texttt{dataset retrieval}, \texttt{exploration} \\
 S2 & \texttt{joinable}, \texttt{unionable}, \texttt{overlap}, \texttt{join discovery}, \texttt{union discovery} \\
 S3 & \texttt{wrangling}, \texttt{preparation}, \texttt{cleaning}, \texttt{transform}, \texttt{pipeline synthesis} \\
-S4 & \texttt{schema matching}, \texttt{ER}, \texttt{record linkage}, \texttt{DI}, \texttt{LLM} \\
+S4 & \texttt{schema matching}, \texttt{ER}, \texttt{record linkage}, \texttt{DI}, \texttt{table integration} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -471,7 +471,7 @@ A different strand treats preparation as workflow construction. CtxPipe, HAIPipe
 Preparation therefore becomes a balancing act between quick automation and reusable process design. LM-based curation can shorten time to first result, but repeated use still requires provenance, validation, and rerunnable workflows. Pipeline-construction systems help when the same analytical pattern recurs across datasets, whereas relationalization systems matter when later matching depends on structure that is still implicit in the raw inputs.
 
 \subsection{Integration and Matching}
-Integration is the stage where cleaned candidates have to become one coherent analytical output. Table~\ref{tab:integration-methods} groups this stage into schema/table integration, ER workflows, evaluation-oriented matching work, and reusable integration signals. Those categories capture the main ways recent systems decide what should be aligned and what evidence is strong enough to support a merge.
+Integration is the stage where cleaned candidates have to become one coherent analytical output. Table~\ref{tab:integration-methods} groups this stage into schema/table integration, EM and ER workflows, evaluation-oriented matching work, and reusable integration signals. Those categories capture the main ways recent systems decide what should be aligned and what evidence is strong enough to support a merge.
 \begin{table*}[!htbp]
 \caption{Integration \& Matching methods mapped to taxonomy to show category structure and representative contributions.}
 \label{tab:integration-methods}
@@ -619,7 +619,7 @@ Inputs are semi-structured or irregular &
 Makes messy data queryable &
 Brittle multi-step transforms \\
 \addlinespace[0.25em]
-Integration and ER workflows &
+EM and ER workflows &
 DIALITE~\cite{10.1145/3555041.3589732}, Magneto~\cite{10.14778/3742728.3742757}, FlexER~\cite{10.1145/3588722}, Unicorn~\cite{10.1145/3588938} &
 Sources overlap under limited labels or policy constraints &
 Richer outputs and intent awareness &
